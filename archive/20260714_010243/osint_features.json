@@ -1,0 +1,16 @@
+{
+  "date": "2026-07-15",
+  "temp_forecast_mean": 27.145833333333332,
+  "temp_forecast_std": 2.030389775114347,
+  "cloud_cover_pct": 40.041666666666664,
+  "precip_forecast_mm": 0.0,
+  "wind_speed_avg": 7.195833333333333,
+  "wind_dir_avg": 194.8359292113711,
+  "metar_temp_c": 26,
+  "metar_dewpoint_c": 7,
+  "metar_wind_present": true,
+  "sea_breeze_flag": 1,
+  "month": 7,
+  "weekday": 2,
+  "day": 15
+}

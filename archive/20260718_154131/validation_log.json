@@ -1,0 +1,15 @@
+{
+  "date": "2026-07-19",
+  "observed_temp": 26,
+  "max_abs_diff": 0.20714285714285713,
+  "threshold": 0.08,
+  "signal": true,
+  "signal_interval": {
+    "lo": 27,
+    "hi": 28,
+    "market_p": 0.35,
+    "model_p": 0.14285714285714285,
+    "diff": 0.20714285714285713
+  },
+  "timestamp": "2026-07-18T15:41:31.286115+00:00"
+}

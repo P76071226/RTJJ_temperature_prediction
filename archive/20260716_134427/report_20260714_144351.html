@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RJTT Temperature Prediction Report – 2026-07-15</title>
+<style>
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 40px; background: #f8f9fa; color: #212529; }
+h1, h2 { color: #0d6efd; }
+.container { max-width: 900px; margin: auto; background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); border-radius: 8px; }
+table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+th, td { padding: 8px 12px; border: 1px solid #dee2e6; text-align: left; }
+th { background-color: #e9ecef; }
+tr:nth-child(even) { background-color: #f8f9fa; }
+.signal { display: inline-block; padding: 6px 12px; background: #d4edda; color: #155724; border-radius: 4px; font-weight: bold; margin: 10px 0; }
+.note { font-size: 0.9em; color: #6c757d; }
+</style>
+</head>
+<body>
+<div class="container">
+<h1>RJTT Temperature Prediction Report</h1>
+<p><strong>Date:</strong> 2026-07-15</p>
+<p><strong>Generated:</strong> 2026-07-14T14:43:51.407341Z</p>
+
+<div class="signal">
+🚨 SIGNAL DETECTED: Model vs Market edge exceeds threshold
+</div>
+
+<h2>Market Implied Probabilities</h2>
+<table>
+<thead><tr><th>Interval (℃)</th><th>Implied Probability</th></tr></thead>
+<tbody>
+<tr><td>24–25</td><td>0.020</td></tr>
+<tr><td>25–26</td><td>0.080</td></tr>
+<tr><td>26–27</td><td>0.200</td></tr>
+<tr><td>27–28</td><td>0.350</td></tr>
+<tr><td>28–29</td><td>0.250</td></tr>
+<tr><td>29–30</td><td>0.080</td></tr>
+<tr><td>30–31</td><td>0.020</td></tr>
+</tbody></table>
+<h2>Model Predicted Probabilities</h2>
+<table>
+<thead><tr><th>Interval (℃)</th><th>Model Probability</th></tr></thead>
+<tbody>
+<tr><td>24–25</td><td>0.258</td></tr>
+<tr><td>25–26</td><td>0.237</td></tr>
+<tr><td>26–27</td><td>0.193</td></tr>
+<tr><td>27–28</td><td>0.141</td></tr>
+<tr><td>28–29</td><td>0.091</td></tr>
+<tr><td>29–30</td><td>0.053</td></tr>
+<tr><td>30–31</td><td>0.027</td></tr>
+</tbody></table>
+<h2>Key OSINT Features</h2>
+<table>
+<thead><tr><th>Feature</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Forecast Mean Temperature (℃)</td><td>27.27</td></tr>
+<tr><td>Forecast Std Dev (℃)</td><td>2.20</td></tr>
+<tr><td>Cloud Cover (%)</td><td>33.04</td></tr>
+<tr><td>Sea Breeze Flag (1=yes)</td><td>1</td></tr>
+<tr><td>Forecast Precipitation (mm)</td><td>0.00</td></tr>
+<tr><td>Average Wind Speed (m/s)</td><td>7.37</td></tr>
+<tr><td>METAR Temperature (℃)</td><td>26</td></tr>
+<tr><td>METAR Dewpoint (℃)</td><td>7</td></tr>
+<tr><td>Month</td><td>7</td></tr>
+<tr><td>Weekday (0=Mon)</td><td>2</td></tr>
+</tbody></table>
+<h2>Validation Results</h2>
+<table>
+<thead><tr><th>Metric</th><th>Value</th></tr></thead>
+<tbody>
+<tr><td>Max Absolute Difference (Model vs Market)</td><td>0.2378</td></tr>
+<tr><td>Threshold for Signal</td><td>0.0800</td></tr>
+<tr><td>Signal Present</td><td>YES</td></tr>
+<tr><td>Signal Interval</td><td>24–25℃ (Market 0.020, Model 0.258, Diff 0.2378)</td></tr>
+</tbody></table>
+<div class="note">This report is generated automatically by the RJTT temperature prediction pipeline. Data sources: Polymarket (market implied probabilities), Open-Meteo (forecast), NOAA METAR (observations). Model: Advanced regression model (if pretrained models available) else heuristic. Signal threshold: 0.08 (8 percentage points). </div></div></body></html>
