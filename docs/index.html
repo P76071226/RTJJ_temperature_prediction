@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RJTT Temperature Prediction Pipeline</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.0.2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; background: #f8f9fa; }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 60px 20px; margin: -20px -20px 40px; text-align: center; }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .subtitle { font-size: 1.2rem; opacity: 0.9; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin: 5px; }
+        .badge-success { background: #00d97e; color: #000; }
+        .badge-warning { background: #ffb700; color: #000; }
+        .badge-info { background: #00b4d8; color: #fff; }
+        .badge-danger { background: #ff3366; color: #fff; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: transform 0.2s; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.12); }
+        .card h2 { font-size: 1.3rem; margin-bottom: 16px; color: #1a1a2e; display: flex; align-items: center; gap: 10px; }
+        .card h2::before { content: ''; width: 4px; height: 24px; background: linear-gradient(180deg, #00b4d8, #00d97e); border-radius: 2px; }
+        
+        .metric { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eef; }
+        .metric:last-child { border-bottom: none; }
+        .metric-label { color: #666; }
+        .metric-value { font-weight: 700; font-size: 1.1rem; }
+        .metric-value.positive { color: #00d97e; }
+        .metric-value.negative { color: #ff3366; }
+        .metric-value.warning { color: #ffb700; }
+        
+        .chart-container { height: 300px; margin: 16px 0; }
+        .architecture { background: #f0f4f8; border-radius: 12px; padding: 24px; margin: 24px 0; }
+        .pipeline-step { display: flex; align-items: center; gap: 16px; padding: 16px; background: white; border-radius: 8px; margin: 12px 0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .step-num { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #00b4d8, #00d97e); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 1.2rem; flex-shrink: 0; }
+        .step-info h3 { font-size: 1.1rem; margin-bottom: 4px; }
+        .step-info p { color: #666; font-size: 0.9rem; }
+        .step-arrow { flex: 1; height: 2px; background: linear-gradient(90deg, #00b4d8, #00d97e); margin: 0 16px; display: none; }
+        @media (min-width: 768px) { .step-arrow { display: block; } }
+        
+        .confusion-matrix { overflow-x: auto; }
+        .confusion-matrix table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        .confusion-matrix th, .confusion-matrix td { padding: 8px; text-align: center; border: 1px solid #eef; }
+        .confusion-matrix th { background: #1a1a2e; color: white; }
+        .confusion-matrix .high { background: #d4f6e8; }
+        .confusion-matrix .med { background: #fff3cd; }
+        .confusion-matrix .low { background: #f8d7da; }
+        
+        .signal-card { border-left: 4px solid; }
+        .signal-buy { border-left-color: #00d97e; background: #f0fff4; }
+        .signal-sell { border-left-color: #ff3366; background: #fff0f2; }
+        .signal-hold { border-left-color: #ffb700; background: #fffef0; }
+        
+        .code-block { background: #1a1a2e; color: #e0e0e0; padding: 16px; border-radius: 8px; font-family: 'Monaco', monospace; font-size: 0.85rem; overflow-x: auto; margin: 16px 0; }
+        .code-comment { color: #6a9955; }
+        .code-keyword { color: #c586c0; }
+        .code-string { color: #ce9178; }
+        
+        footer { text-align: center; padding: 40px; color: #666; font-size: 0.9rem; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+        .tab { padding: 10px 20px; background: white; border: 2px solid #eef; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .tab.active { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; animation: fadeIn 0.3s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
+        .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; }
+        .legend-color { width: 16px; height: 16px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌡️ RJTT Temperature Prediction Pipeline</h1>
+        <p class="subtitle">Automated Polymarket Arbitrage Detection for Tokyo Haneda Daily Max Temperature</p>
+        <div>
+            <span class="badge badge-success">Live Pipeline</span>
+            <span class="badge badge-info">XGBoost + Isotonic</span>
+            <span class="badge badge-warning">28 Training Samples</span>
+            <span class="badge badge-danger">6hr Cron</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Overview Metrics -->
+        <section class="grid">
+            <div class="card">
+                <h2>📊 Current Performance</h2>
+                <div class="metric"><span class="metric-label">Mean Brier Score</span><span class="metric-value">0.1169</span></div>
+                <div class="metric"><span class="metric-label">Mean Log Score</span><span class="metric-value">4.19</span></div>
+                <div class="metric"><span class="metric-label">RPS</span><span class="metric-value">0.233</span></div>
+                <div class="metric"><span class="metric-label">Directional Accuracy</span><span class="metric-value negative">0.00%</span></div>
+                <div class="metric"><span class="metric-label">Top Interval Hit Rate</span><span class="metric-value negative">0.00%</span></div>
+                <div class="metric"><span class="metric-label">Forecast Bias (FC - Actual)</span><span class="metric-value negative">-3.45°C</span></div>
+                <div class="metric"><span class="metric-label">Total Simulated PnL</span><span class="metric-value negative">-23.00</span></div>
+                <div class="metric"><span class="metric-label">Win Days</span><span class="metric-value negative">0 / 28</span></div>
+            </div>
+            
+            <div class="card">
+                <h2>🎯 Latest Signal (2026-07-26)</h2>
+                <div class="signal-card signal-buy" style="padding: 16px; border-radius: 8px; margin: 16px 0;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #00d97e;">STRONG BUY SIGNAL</div>
+                    <div style="margin-top: 8px;">Interval: <strong>29-30°C</strong></div>
+                    <div>Market Probability: <strong>4.0%</strong></div>
+                    <div>Model Probability: <strong>73.5%</strong></div>
+                    <div style="font-size: 1.3rem; font-weight: 700; color: #00d97e; margin-top: 12px;">Edge: +69.5 pp</div>
+                </div>
+                <div class="metric"><span class="metric-label">31-32°C</span><span class="metric-value negative">Market: 33.7% → Model: 0%</span></div>
+                <div class="metric"><span class="metric-label">32-33°C</span><span class="metric-value negative">Market: 25.7% → Model: 4.5%</span></div>
+            </div>
+
+            <div class="card">
+                <h2>📈 Data Status</h2>
+                <div class="metric"><span class="metric-label">Archive Days (Complete)</span><span class="metric-value">45</span></div>
+                <div class="metric"><span class="metric-label">Days w/ Actual Temps</span><span class="metric-value">28</span></div>
+                <div class="metric"><span class="metric-label">Training Samples</span><span class="metric-value warning">28</span></div>
+                <div class="metric"><span class="metric-label">Unique Classes</span><span class="metric-value">5</span></div>
+                <div class="metric"><span class="metric-label">Historical Temps (Open-Meteo)</span><span class="metric-value">181 days</span></div>
+                <div class="metric"><span class="metric-label">Model Version</span><span class="metric-value">v2 (Retrained)</span></div>
+                <div class="metric"><span class="metric-label">Classes Covered</span><span class="metric-value">27-33°C</span></div>
+                <div class="metric"><span class="metric-label">Next Retrain</span><span class="metric-value">Weekly (Auto)</span></div>
+            </div>
+        </section>
+
+        <!-- Pipeline Architecture -->
+        <section>
+            <h2 style="margin-bottom: 24px;">🏗️ Pipeline Architecture</h2>
+            <div class="architecture">
+                <div class="pipeline-step">
+                    <div class="step-num">1</div>
+                    <div class="step-info">
+                        <h3>Market Collector</h3>
+                        <p>Fetches 10 binary markets from Polymarket CLI → Normalizes to 13 temperature intervals (24-36°C) → Outputs <code>data/market_raw.json</code></p>
+                    </div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-num">2</div>
+                    <div class="step-info">
+                        <h3>OSINT Researcher</h3>
+                        <p>Open-Meteo forecast (mean, std, cloud%, precip, wind) + JMA METAR observations + Sea breeze flag + Time features → Outputs <code>data/osint_features.json</code></p>
+                    </div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-num">3</div>
+                    <div class="step-info">
+                        <h3>Model Builder</h3>
+                        <p>Loads XGBoost + Isotonic calibration (v2) → 13 features → Predicts 13 interval probabilities → Outputs <code>data/model_probs.json</code></p>
+                    </div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-num">4</div>
+                    <div class="step-info">
+                        <h3>Validator</h3>
+                        <p>Compares model vs market probs → Max abs diff > 8pp threshold → Identifies signal intervals → Logs observed temp → Outputs <code>data/validation_log.json</code></p>
+                    </div>
+                </div>
+                <div class="pipeline-step">
+                    <div class="step-num">5</div>
+                    <div class="step-info">
+                        <h3>Report Generator</h3>
+                        <p>Chart.js visualizations → Probability comparison charts → Feature importance → Signal cards → Saves <code>reports/report_*.html</code></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabs for detailed views -->
+        <div class="tabs">
+            <button class="tab active" onclick="showTab('backtest')">📉 Backtest Results</button>
+            <button class="tab" onclick="showTab('features')">🔧 Features & Model</button>
+            <button class="tab" onclick="showTab('signals')">🚨 Signal History</button>
+            <button class="tab" onclick="showTab('code')">💻 Code Structure</button>
+        </div>
+
+        <!-- Backtest Tab -->
+        <div id="tab-backtest" class="tab-content active">
+            <div class="grid">
+                <div class="card">
+                    <h2>Brier Score Distribution</h2>
+                    <div class="chart-container"><canvas id="brierChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h2>Log Score Distribution</h2>
+                    <div class="chart-container"><canvas id="logChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h2>PnL by Day</h2>
+                    <div class="chart-container"><canvas id="pnlChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h2>Forecast Error (FC - Actual)</h2>
+                    <div class="chart-container"><canvas id="errorChart"></canvas></div>
+                </div>
+            </div>
+            
+            <div class="grid">
+                <div class="card">
+                    <h2>Performance by Temperature Range</h2>
+                    <div class="chart-container"><canvas id="tempRangeChart"></canvas></div>
+                </div>
+                <div class="card">
+                    <h2>Model vs Market Directional Accuracy</h2>
+                    <div class="chart-container"><canvas id="dirAccChart"></canvas></div>
+                </div>
+            </div>
+
+            <div class="card confusion-matrix">
+                <h2>Interval Prediction Confusion Matrix</h2>
+                <table id="confusionMatrix">
+                    <thead><tr><th>Actual \ Pred</th></tr></thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Features Tab -->
+        <div id="tab-features" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h2>Feature Engineering</h2>
+                    <div class="code-block"><pre><span class="code-comment"># 13 Features for XGBoost</span>
+features = [
+    <span class="code-string">'fc_mean'</span>,        <span class="code-comment"># Open-Meteo forecast mean temp</span>
+    <span class="code-string">'fc_std'</span>,         <span class="code-comment"># Forecast ensemble spread</span>
+    <span class="code-string">'cloud'</span>,          <span class="code-comment"># Cloud cover %</span>
+    <span class="code-string">'precip'</span>,         <span class="code-comment"># Precipitation forecast (mm)</span>
+    <span class="code-string">'wind'</span>,           <span class="code-comment"># Wind speed avg</span>
+    <span class="code-string">'sea_breeze'</span>,     <span class="code-comment"># Sea breeze flag (0/1)</span>
+    <span class="code-string">'dow'</span>,            <span class="code-comment"># Day of week (0-6)</span>
+    <span class="code-string">'sin_doy'</span>,        <span class="code-comment"># Seasonal: sin(2π*DOY/365)</span>
+    <span class="code-string">'cos_doy'</span>,        <span class="code-comment"># Seasonal: cos(2π*DOY/365)</span>
+    <span class="code-string">'cloud_sq'</span>,       <span class="code-comment"># Non-linear: cloud²</span>
+    <span class="code-string">'cloud_x_sea'</span>,    <span class="code-comment"># Interaction: cloud × sea_breeze</span>
+    <span class="code-string">'fc_x_cloud'</span>,     <span class="code-comment"># Interaction: fc_mean × cloud</span>
+    <span class="code-string">'hist_err'</span>        <span class="code-comment"># Previous day forecast error</span>
+]</pre></div>
+                </div>
+                <div class="card">
+                    <h2>Model Configuration</h2>
+                    <div class="code-block"><pre><span class="code-comment"># XGBoost Classifier</span>
+XGBClassifier(
+    n_estimators=<span class="code-string">200</span>,
+    max_depth=<span class="code-string">4</span>,
+    learning_rate=<span class="code-string">0.05</span>,
+    subsample=<span class="code-string">0.8</span>,
+    colsample_bytree=<span class="code-string">0.8</span>,
+    objective=<span class="code-string">'multi:softprob'</span>,
+    num_class=<span class="code-string">13</span>,
+    eval_metric=<span class="code-string">'mlogloss'</span>
+)
+
+<span class="code-comment"># Isotonic Calibration per class</span>
+IsotonicRegression(out_of_bounds=<span class="code-string">'clip'</span>)
+<span class="code-comment"># Applied to each of 13 interval probabilities</span></pre></div>
+                </div>
+                <div class="card">
+                    <h2>Class Mapping (Remapped)</h2>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <thead><tr style="background: #1a1a2e; color: white;"><th>Original</th><th>Interval</th><th>Mapped</th><th>Samples</th></tr></thead>
+                        <tbody>
+                            <tr><td>3</td><td>27-28°C</td><td>0</td><td>7</td></tr>
+                            <tr><td>5</td><td>29-30°C</td><td>1</td><td>7</td></tr>
+                            <tr><td>6</td><td>30-31°C</td><td>2</td><td>3</td></tr>
+                            <tr><td>9</td><td>33-34°C</td><td>3</td><td>6</td></tr>
+                            <tr><td>10</td><td>34-35°C</td><td>4</td><td>5</td></tr>
+                        </tbody>
+                    </table>
+                    <p style="margin-top: 12px; color: #666; font-size: 0.9rem;">
+                        Only 5 of 13 intervals have training data. Intervals 24-27°C and 35-36°C have 0 samples.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Signals Tab -->
+        <div id="tab-signals" class="tab-content">
+            <div class="card">
+                <h2>Signal Detection Logic</h2>
+                <div class="code-block"><pre><span class="code-comment"># For each temperature interval:</span>
+edge = model_prob - market_prob
+<span class="code-comment"># Signal if edge > 8 percentage points</span>
+<span class="code-keyword">if</span> edge > <span class="code-string">0.08</span>:
+    signal = <span class="code-string">'BUY'</span>   <span class="code-comment"># Model thinks interval more likely than market</span>
+<span class="code-keyword">elif</span> edge < <span class="code-string">-0.08</span>:
+    signal = <span class="code-string">'SELL'</span>  <span class="code-comment"># Market overpriced vs model</span>
+<span class="code-keyword">else</span>:
+    signal = <span class="code-string">'HOLD'</span></pre></div>
+            </div>
+            <div class="card">
+                <h2>Recent Signals (Last 10 Runs)</h2>
+                <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+                    <thead><tr style="background: #1a1a2e; color: white;"><th>Date</th><th>Actual</th><th>Signal Interval</th><th>Market</th><th>Model</th><th>Edge</th><th>Result</th></tr></thead>
+                    <tbody id="signalTable"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Code Tab -->
+        <div id="tab-code" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h2>Project Structure</h2>
+                    <div class="code-block"><pre>rjtt_project/
+├── orchestrator.py          <span class="code-comment"># Main pipeline runner</span>
+├── market_collector.py      <span class="code-comment"># Polymarket API → 13 intervals</span>
+├── osint_researcher.py      <span class="code-comment"># Open-Meteo + JMA METAR</span>
+├── model_builder.py         <span class="code-comment"># XGBoost + Isotonic prediction</span>
+├── validator.py             <span class="code-comment"># Edge detection + logging</span>
+├── report_generator.py      <span class="code-comment"># HTML + Chart.js reports</span>
+├── backtest_6month.py       <span class="code-comment"># Historical backtesting</span>
+├── retrain_model.py         <span class="code-comment"># Weekly retraining script</span>
+├── models/
+│   ├── xgboost_calibrated.pkl
+│   ├── xgboost_calibrated_v2.pkl
+│   ├── lightgbm_calibrated.pkl
+│   └── logistic_calibrated.pkl
+├── archive/                 <span class="code-comment"># Daily snapshots (45+ days)</span>
+│   └── 20260712_164540/
+│       ├── market_raw.json
+│       ├── osint_features.json
+│       ├── model_probs.json
+│       └── validation_log.json
+├── data/                    <span class="code-comment"># Current run intermediate files</span>
+├── reports/                 <span class="code-comment"># HTML reports</span>
+└── historical_temps_6months.csv</pre></div>
+                </div>
+                <div class="card">
+                    <h2>Cronjob Configuration</h2>
+                    <div class="code-block"><pre><span class="code-comment"># RJTT Pipeline - Every 6 hours</span>
+job_id: f81281b7ff0b
+schedule: <span class="code-string">'every 6h'</span>
+command: proot-distro login ubuntu -- bash -c "
+  source ~/ml_env/bin/activate && 
+  cd /root/hermes_research/rjtt_project && 
+  python3 orchestrator.py"
+deliver: telegram
+
+<span class="code-comment"># Weekly Retrain (Planned)</span>
+job_id: <span class="code-string">'rjtt_weekly_retrain'</span>
+schedule: <span class="code-string">'0 2 * * 0'</span>  <span class="code-comment"># Sunday 2 AM</span>
+command: python3 retrain_model.py</pre></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <p>RJTT Temperature Prediction Pipeline • Built with XGBoost, Isotonic Calibration, Polymarket API, Open-Meteo</p>
+            <p>Last Updated: <span id="lastUpdate"></span> • <a href="https://github.com/P76071226/RTJJ_temperature_prediction" target="_blank" style="color: #00b4d8;">GitHub Repository</a></p>
+        </footer>
+    </div>
+
+    <script>
+        // Tab switching
+        function showTab(tabId) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+
+        // Backtest data (from actual run)
+        const backtestData = {
+            dates: ["2026-07-12","2026-07-12","2026-07-12","2026-07-13","2026-07-13","2026-07-13","2026-07-17","2026-07-18","2026-07-18","2026-07-18","2026-07-18","2026-07-18","2026-07-18","2026-07-19","2026-07-19","2026-07-19","2026-07-20","2026-07-20","2026-07-21","2026-07-21","2026-07-22","2026-07-22","2026-07-22","2026-07-22","2026-07-23","2026-07-23","2026-07-23"],
+            actualTemps: [29.5,29.5,29.5,29.5,29.5,29.5,29.6,27.9,27.9,27.9,27.9,27.9,27.9,30.6,30.6,30.6,33.4,33.4,34.5,34.5,33.5,33.5,33.5,33.5,34.0,34.0,34.0],
+            brier: [0.2499,0.2499,0.1898,0.1668,0.1533,0.1482,0.2266,0.1699,0.1784,0.1756,0.1224,0.1224,0.0710,0.0710,0.0710,0.0710,0.0710,0.0710,0.0710,0.0710,0.0710,0.0710,0.0710,0.0710,0.0710,0.0710,0.1068],
+            logScore: [18.58,18.58,5.45,3.49,2.85,2.67,12.91,2.74,3.00,2.91,1.95,1.95,2.56,2.56,2.56,2.56,2.56,2.56,2.56,2.56,2.56,2.56,2.56,2.56,2.56,2.56,2.56,2.63],
+            pnl: [-1,-1,-2,-2,-2,-2,-2,-2,-2,-2,-2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,-1],
+            forecastError: [-4.4,-4.4,-4.1,-3.6,-3.6,-2.2,-3.9,-1.5,-1.5,-1.4,-1.5,-0.9,-0.9,-3.3,-3.3,-2.3,-5.1,-5.1,-5.5,-5.6,-4.5,-4.4,-4.4,-3.8,-4.1,-4.1,-6.0],
+            dirCorrect: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        };
+
+        // Signal history data
+        const signals = [
+            {date:"2026-07-23", actual:34.0, interval:"34-35°C", market:0.117, model:0.072, edge:-0.045, result:"HOLD"},
+            {date:"2026-07-22", actual:33.5, interval:"33-34°C", market:0.337, model:0.242, edge:-0.095, result:"SELL"},
+            {date:"2026-07-21", actual:34.5, interval:"34-35°C", market:0.117, model:0.072, edge:-0.045, result:"HOLD"},
+            {date:"2026-07-20", actual:33.4, interval:"33-34°C", market:0.337, model:0.242, edge:-0.095, result:"SELL"},
+            {date:"2026-07-19", actual:30.6, interval:"30-31°C", market:0.020, model:0.000, edge:-0.020, result:"HOLD"},
+            {date:"2026-07-18", actual:27.9, interval:"27-28°C", market:0.350, model:0.000, edge:-0.350, result:"SELL"},
+            {date:"2026-07-17", actual:29.6, interval:"29-30°C", market:0.080, model:0.000, edge:-0.080, result:"HOLD"},
+            {date:"2026-07-13", actual:29.5, interval:"29-30°C", market:0.080, model:0.000, edge:-0.080, result:"HOLD"},
+            {date:"2026-07-12", actual:29.5, interval:"29-30°C", market:0.080, model:0.855, edge:0.775, result:"BUY ❌"},
+        ];
+
+        // Populate signal table
+        const signalTable = document.getElementById('signalTable');
+        signals.forEach(s => {
+            const edge = s.model - s.market;
+            const edgeClass = edge > 0.08 ? 'positive' : (edge < -0.08 ? 'negative' : 'warning');
+            const row = document.createElement('tr');
+            row.style.borderBottom = '1px solid #eef';
+            row.innerHTML = `
+                <td style="padding: 8px;">${s.date}</td>
+                <td style="padding: 8px;">${s.actual}°C</td>
+                <td style="padding: 8px; font-weight: 600;">${s.interval}</td>
+                <td style="padding: 8px;">${(s.market*100).toFixed(1)}%</td>
+                <td style="padding: 8px;">${(s.model*100).toFixed(1)}%</td>
+                <td style="padding: 8px;"><span class="metric-value ${edgeClass}">${(edge*100).toFixed(1)}pp</span></td>
+                <td style="padding: 8px;">${s.result}</td>
+            `;
+            signalTable.appendChild(row);
+        });
+
+        // Charts
+        const chartColors = {
+            model: '#00b4d8',
+            market: '#ffb700',
+            positive: '#00d97e',
+            negative: '#ff3366'
+        };
+
+        // Brier Score Chart
+        new Chart(document.getElementById('brierChart'), {
+            type: 'bar',
+            data: {
+                labels: backtestData.dates.map((d,i) => d + '#' + (i+1)),
+                datasets: [{
+                    label: 'Brier Score',
+                    data: backtestData.brier,
+                    backgroundColor: backtestData.brier.map(v => v < 0.15 ? chartColors.positive : (v < 0.2 ? chartColors.warning : chartColors.negative)),
+                    borderRadius: 4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 0.3 } } }
+        });
+
+        // Log Score Chart
+        new Chart(document.getElementById('logChart'), {
+            type: 'line',
+            data: {
+                labels: backtestData.dates.map((d,i) => d + '#' + (i+1)),
+                datasets: [{
+                    label: 'Log Score',
+                    data: backtestData.logScore,
+                    borderColor: chartColors.model,
+                    backgroundColor: 'rgba(0,180,216,0.1)',
+                    fill: true,
+                    tension: 0.2
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true } } }
+        });
+
+        // PnL Chart
+        new Chart(document.getElementById('pnlChart'), {
+            type: 'bar',
+            data: {
+                labels: backtestData.dates.map((d,i) => d + '#' + (i+1)),
+                datasets: [{
+                    label: 'Daily PnL',
+                    data: backtestData.pnl,
+                    backgroundColor: backtestData.pnl.map(v => v > 0 ? chartColors.positive : (v < 0 ? chartColors.negative : '#666')),
+                    borderRadius: 4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: false } } }
+        });
+
+        // Forecast Error Chart
+        new Chart(document.getElementById('errorChart'), {
+            type: 'bar',
+            data: {
+                labels: backtestData.dates.map((d,i) => d + '#' + (i+1)),
+                datasets: [{
+                    label: 'FC - Actual (°C)',
+                    data: backtestData.forecastError,
+                    backgroundColor: chartColors.negative,
+                    borderRadius: 4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { title: { display: true, text: '°C' } } } }
+        });
+
+        // Temperature Range Performance
+        const tempRanges = ['(25,30]', '(30,35]'];
+        const rangeBrier = [0.1602, 0.0736];
+        const rangeDir = [0, 0];
+        const rangePnL = [-1.57, -0.07];
+        new Chart(document.getElementById('tempRangeChart'), {
+            type: 'bar',
+            data: {
+                labels: tempRanges,
+                datasets: [
+                    { label: 'Brier', data: rangeBrier, backgroundColor: chartColors.model, yAxisID: 'y', borderRadius: 4 },
+                    { label: 'Dir Acc %', data: rangeDir, backgroundColor: chartColors.market, yAxisID: 'y1', borderRadius: 4 },
+                    { label: 'PnL', data: rangePnL, backgroundColor: chartColors.negative, yAxisID: 'y2', borderRadius: 4 }
+                ]
+            },
+            options: { responsive: true, maintainAspectRatio: false, scales: { y: { type: 'linear', position: 'left', min: 0, max: 0.2 }, y1: { type: 'linear', position: 'right', min: 0, max: 100, grid: { drawOnChartArea: false } }, y2: { type: 'linear', position: 'right', offset: true, grid: { drawOnChartArea: false } } } }
+        });
+
+        // Directional Accuracy
+        new Chart(document.getElementById('dirAccChart'), {
+            type: 'doughnut',
+            data: {
+                labels: ['Model Correct', 'Market Correct', 'Both Wrong'],
+                datasets: [{
+                    data: [0, 5, 23],
+                    backgroundColor: [chartColors.positive, chartColors.market, '#ccc'],
+                    borderWidth: 0
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+        });
+
+        // Confusion Matrix
+        const intervals = ['24-25','25-26','26-27','27-28','28-29','29-30','30-31','31-32','32-33','33-34','34-35','35-36','36-37'];
+        const confusionData = [
+            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 24-25
+            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 25-26
+            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 26-27
+            [0,0,0,0,0,0,0,0,0,7,0,0,0], // 27-28: 7 actual, 0 pred
+            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 28-29
+            [0,0,0,0,0,0,0,0,0,14,0,0,0], // 29-30: 14 actual
+            [0,0,0,0,0,0,0,0,0,3,0,0,0], // 30-31: 3 actual
+            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 31-32
+            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 32-33
+            [0,0,0,0,0,0,0,0,0,0,6,0,0], // 33-34: 6 actual
+            [0,0,0,0,0,0,0,0,0,0,5,0,0], // 34-35: 5 actual
+            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 35-36
+            [0,0,0,0,0,0,0,0,0,0,0,0,0]  // 36-37
+        ];
+
+        const confusionTable = document.getElementById('confusionMatrix');
+        // Header
+        let header = '<tr><th>Actual \\ Pred</th>';
+        intervals.forEach(i => header += `<th style="padding:6px;font-size:0.7rem;">${i}</th>`);
+        header += '</tr>';
+        confusionTable.querySelector('thead').innerHTML = header;
+
+        // Body
+        let body = '';
+        confusionData.forEach((row, i) => {
+            body += `<tr><th style="padding:6px;background:#1a1a2e;color:white;font-size:0.7rem;">${intervals[i]}</th>`;
+            row.forEach((val, j) => {
+                const cls = val > 5 ? 'high' : (val > 0 ? 'med' : 'low');
+                body += `<td class="${cls}" style="padding:4px;font-size:0.75rem;">${val}</td>`;
+            });
+            body += '</tr>';
+        });
+        confusionTable.querySelector('tbody').innerHTML = body;
+
+        // Last update
+        document.getElementById('lastUpdate').textContent = new Date().toLocaleString();
+    </script>
+</body>
+</html>

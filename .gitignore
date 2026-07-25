@@ -78,3 +78,5 @@ models/*.pkl
 archive/
 *.html
 !README.md
+!docs/index.html
+!docs/data.json
