@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RJTT Temperature Prediction Pipeline</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.0.2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; background: #f8f9fa; }
@@ -18,6 +17,7 @@
         .badge-warning { background: #ffb700; color: #000; }
         .badge-info { background: #00b4d8; color: #fff; }
         .badge-danger { background: #ff3366; color: #fff; }
+        .badge-purple { background: #a855f7; color: #fff; }
         
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 24px; margin-bottom: 40px; }
         .card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: transform 0.2s; }
@@ -71,6 +71,13 @@
         .legend { display: flex; gap: 16px; flex-wrap: wrap; margin: 16px 0; }
         .legend-item { display: flex; align-items: center; gap: 6px; font-size: 0.9rem; }
         .legend-color { width: 16px; height: 16px; border-radius: 4px; }
+        
+        .sector-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+        .sector-item { background: #f8f9fa; padding: 8px 12px; border-radius: 6px; font-size: 0.85rem; border: 1px solid #eef; }
+        .sector-item strong { color: #1a1a2e; }
+        
+        .report-link { display: inline-block; padding: 8px 16px; background: #00b4d8; color: white; border-radius: 6px; text-decoration: none; font-weight: 600; margin: 4px; transition: background 0.2s; }
+        .report-link:hover { background: #0096c7; }
     </style>
 </head>
 <body>
@@ -82,6 +89,7 @@
             <span class="badge badge-info">XGBoost + Isotonic</span>
             <span class="badge badge-warning">28 Training Samples</span>
             <span class="badge badge-danger">6hr Cron</span>
+            <span class="badge badge-purple">78 Company Universe</span>
         </div>
     </header>
 
@@ -89,7 +97,7 @@
         <!-- Overview Metrics -->
         <section class="grid">
             <div class="card">
-                <h2>📊 Current Performance</h2>
+                <h2>📊 RJTT Backtest (28 Days)</h2>
                 <div class="metric"><span class="metric-label">Mean Brier Score</span><span class="metric-value">0.1169</span></div>
                 <div class="metric"><span class="metric-label">Mean Log Score</span><span class="metric-value">4.19</span></div>
                 <div class="metric"><span class="metric-label">RPS</span><span class="metric-value">0.233</span></div>
@@ -173,6 +181,7 @@
             <button class="tab active" onclick="showTab('backtest')">📉 Backtest Results</button>
             <button class="tab" onclick="showTab('features')">🔧 Features & Model</button>
             <button class="tab" onclick="showTab('signals')">🚨 Signal History</button>
+            <button class="tab" onclick="showTab('company')">🏢 Company Research</button>
             <button class="tab" onclick="showTab('code')">💻 Code Structure</button>
         </div>
 
@@ -180,15 +189,15 @@
         <div id="tab-backtest" class="tab-content active">
             <div class="grid">
                 <div class="card">
-                    <h2>Brier Score Distribution</h2>
+                    <h2>Brier Score by Day</h2>
                     <div class="chart-container"><canvas id="brierChart"></canvas></div>
                 </div>
                 <div class="card">
-                    <h2>Log Score Distribution</h2>
+                    <h2>Log Score by Day</h2>
                     <div class="chart-container"><canvas id="logChart"></canvas></div>
                 </div>
                 <div class="card">
-                    <h2>PnL by Day</h2>
+                    <h2>Daily PnL</h2>
                     <div class="chart-container"><canvas id="pnlChart"></canvas></div>
                 </div>
                 <div class="card">
@@ -221,7 +230,7 @@
         <div id="tab-features" class="tab-content">
             <div class="grid">
                 <div class="card">
-                    <h2>Feature Engineering</h2>
+                    <h2>Feature Engineering (13 Features)</h2>
                     <div class="code-block"><pre><span class="code-comment"># 13 Features for XGBoost</span>
 features = [
     <span class="code-string">'fc_mean'</span>,        <span class="code-comment"># Open-Meteo forecast mean temp</span>
@@ -282,7 +291,6 @@ IsotonicRegression(out_of_bounds=<span class="code-string">'clip'</span>)
                 <h2>Signal Detection Logic</h2>
                 <div class="code-block"><pre><span class="code-comment"># For each temperature interval:</span>
 edge = model_prob - market_prob
-<span class="code-comment"># Signal if edge > 8 percentage points</span>
 <span class="code-keyword">if</span> edge > <span class="code-string">0.08</span>:
     signal = <span class="code-string">'BUY'</span>   <span class="code-comment"># Model thinks interval more likely than market</span>
 <span class="code-keyword">elif</span> edge < <span class="code-string">-0.08</span>:
@@ -299,38 +307,149 @@ edge = model_prob - market_prob
             </div>
         </div>
 
+        <!-- Company Research Tab -->
+        <div id="tab-company" class="tab-content">
+            <div class="grid">
+                <div class="card">
+                    <h2>🏢 Company Research Pipeline</h2>
+                    <div class="metric"><span class="metric-label">Total Companies</span><span class="metric-value">78</span></div>
+                    <div class="metric"><span class="metric-label">Sectors</span><span class="metric-value">50+</span></div>
+                    <div class="metric"><span class="metric-label">Rotation</span><span class="metric-value">Day-of-year % 78</span></div>
+                    <div class="metric"><span class="metric-label">Queries/Day</span><span class="metric-value">12 (4 dimensions × 3)</span></div>
+                    <div class="metric"><span class="metric-label">Reports Generated</span><span class="metric-value">3+ (ZS, CRWD, PANW)</span></div>
+                    <div class="metric"><span class="metric-label">Schedule</span><span class="metric-value">Daily 06:00 UTC</span></div>
+                    
+                    <h3 style="margin-top: 20px; margin-bottom: 12px;">4 Research Dimensions</h3>
+                    <div class="code-block"><pre><span class="code-comment"># 12 Targeted Web Search Queries per Company</span>
+dimensions = {
+    <span class="code-string">'business_model'</span>: [<span class="code-comment"># 3 queries</span>
+        <span class="code-string">'how does {company} make money'</span>,
+        <span class="code-string">'{company} revenue streams breakdown'</span>,
+        <span class="code-string">'{company} business model canvas'</span>
+    ],
+    <span class="code-string">'customers'</span>: [<span class="code-comment"># 3 queries</span>
+        <span class="code-string">'{company} customer segments enterprise smb'</span>,
+        <span class="code-string">'{company} target market icp'</span>,
+        <span class="code-string">'{company} customer case studies'</span>
+    ],
+    <span class="code-string">'pricing'</span>: [<span class="code-comment"># 3 queries</span>
+        <span class="code-string">'{company} pricing model subscription usage'</span>,
+        <span class="code-string">'{company} pricing tiers enterprise'</span>,
+        <span class="code-string">'{company} average contract value arr'</span>
+    ],
+    <span class="code-string">'moat'</span>: [<span class="code-comment"># 3 queries</span>
+        <span class="code-string">'{company} competitive advantage moat'</span>,
+        <span class="code-string">'{company} switching costs network effects'</span>,
+        <span class="code-string">'{company} differentiation vs competitors'</span>
+    ]
+}</pre></div>
+                </div>
+                <div class="card">
+                    <h2>📊 Sector Distribution (78 Companies)</h2>
+                    <div class="sector-grid" id="sectorGrid"></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>📄 Generated Reports</h2>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+                    <a href="../company_research/reports/ZS_20260721_research.html" class="report-link" target="_blank">Zscaler (ZS) - 2026-07-21</a>
+                    <a href="../company_research/reports/CRWD_20260721_research.html" class="report-link" target="_blank">CrowdStrike (CRWD) - 2026-07-21</a>
+                    <a href="../company_research/reports/PANW_20260722_research.html" class="report-link" target="_blank">Palo Alto Networks (PANW) - 2026-07-22</a>
+                    <a href="../company_research/reports/PANW_20260723_research.html" class="report-link" target="_blank">Palo Alto Networks (PANW) - 2026-07-23</a>
+                </div>
+                <p style="margin-top: 16px; color: #666; font-size: 0.9rem;">
+                    Reports include: KPI cards (Revenue, YoY Growth, Net Income, FCF Margin, R&D %, SBC %), 
+                    Revenue trajectory bar chart (Chart.js), Stock price line chart, 
+                    4-dimension synthesis (Business Model, Customers, Pricing, Moat)
+                </p>
+            </div>
+            
+            <div class="card">
+                <h2>🔄 Daily Company Research Pipeline</h2>
+                <div class="architecture">
+                    <div class="pipeline-step">
+                        <div class="step-num">1</div>
+                        <div class="step-info">
+                            <h3>Company Selector</h3>
+                            <p>Rotates through 78 companies using day-of-year % 78 → Selects one company per day</p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-num">2</div>
+                        <div class="step-info">
+                            <h3>Company Researcher</h3>
+                            <p>Executes 12 targeted web searches (4 dimensions × 3 queries) → Aggregates raw findings → Saves <code>findings_*.json</code></p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-num">3</div>
+                        <div class="step-info">
+                            <h3>Synthesizer</h3>
+                            <p>Uses LLM to synthesize findings into 4 dimensions: Business Model, Customers, Pricing, Moat → Saves <code>research_*.json</code></p>
+                        </div>
+                    </div>
+                    <div class="pipeline-step">
+                        <div class="step-num">4</div>
+                        <div class="step-info">
+                            <h3>Report Generator</h3>
+                            <p>Creates HTML with Chart.js visualizations: KPI cards, Revenue trajectory (bar), Stock price (line), Dimension summaries → Saves <code>reports/*_research.html</code></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Code Tab -->
         <div id="tab-code" class="tab-content">
             <div class="grid">
                 <div class="card">
-                    <h2>Project Structure</h2>
+                    <h2>RJTT Project Structure</h2>
                     <div class="code-block"><pre>rjtt_project/
-├── orchestrator.py          <span class="code-comment"># Main pipeline runner</span>
-├── market_collector.py      <span class="code-comment"># Polymarket API → 13 intervals</span>
-├── osint_researcher.py      <span class="code-comment"># Open-Meteo + JMA METAR</span>
-├── model_builder.py         <span class="code-comment"># XGBoost + Isotonic prediction</span>
-├── validator.py             <span class="code-comment"># Edge detection + logging</span>
-├── report_generator.py      <span class="code-comment"># HTML + Chart.js reports</span>
-├── backtest_6month.py       <span class="code-comment"># Historical backtesting</span>
-├── retrain_model.py         <span class="code-comment"># Weekly retraining script</span>
+├── orchestrator.py           <span class="code-comment"># Main pipeline runner</span>
+├── market_collector.py       <span class="code-comment"># Polymarket API → 13 intervals</span>
+├── osint_researcher.py       <span class="code-comment"># Open-Meteo + JMA METAR</span>
+├── model_builder.py          <span class="code-comment"># XGBoost + Isotonic prediction</span>
+├── validator.py              <span class="code-comment"># Edge detection + logging</span>
+├── report_generator.py       <span class="code-comment"># HTML + Chart.js reports</span>
+├── backtest_6month.py        <span class="code-comment"># Historical backtesting</span>
+├── retrain_model.py          <span class="code-comment"># Weekly retraining script</span>
 ├── models/
 │   ├── xgboost_calibrated.pkl
 │   ├── xgboost_calibrated_v2.pkl
 │   ├── lightgbm_calibrated.pkl
 │   └── logistic_calibrated.pkl
-├── archive/                 <span class="code-comment"># Daily snapshots (45+ days)</span>
+├── archive/                  <span class="code-comment"># Daily snapshots (45+ days)</span>
 │   └── 20260712_164540/
 │       ├── market_raw.json
 │       ├── osint_features.json
 │       ├── model_probs.json
 │       └── validation_log.json
-├── data/                    <span class="code-comment"># Current run intermediate files</span>
-├── reports/                 <span class="code-comment"># HTML reports</span>
+├── data/                     <span class="code-comment"># Current run intermediate files</span>
+├── reports/                  <span class="code-comment"># HTML reports</span>
 └── historical_temps_6months.csv</pre></div>
                 </div>
                 <div class="card">
-                    <h2>Cronjob Configuration</h2>
-                    <div class="code-block"><pre><span class="code-comment"># RJTT Pipeline - Every 6 hours</span>
+                    <h2>Company Research Structure</h2>
+                    <div class="code-block"><pre>company_research/
+├── orchestrator_company_autonomous.py
+├── company_selector.py       <span class="code-comment"># 78 companies, day-of-year rotation</span>
+├── company_researcher.py     <span class="code-comment"># 12 web searches per company</span>
+├── synthesize_research.py    <span class="code-comment"># LLM synthesis → 4 dimensions</span>
+├── report_generator.py       <span class="code-comment"># Chart.js HTML reports</span>
+├── companies.json            <span class="code-comment"># 78 company definitions</span>
+├── reports/                  <span class="code-comment"># Generated HTML reports</span>
+│   ├── ZS_20260721_research.html
+│   ├── CRWD_20260721_research.html
+│   └── PANW_20260722_research.html
+├── archive/                  <span class="code-comment"># Daily run snapshots</span>
+└── findings_*.json           <span class="code-comment"># Raw web search results</span></pre></div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>Cronjob Configuration</h2>
+                <div class="code-block"><pre><span class="code-comment"># RJTT Pipeline - Every 6 hours</span>
 job_id: f81281b7ff0b
 schedule: <span class="code-string">'every 6h'</span>
 command: proot-distro login ubuntu -- bash -c "
@@ -339,23 +458,29 @@ command: proot-distro login ubuntu -- bash -c "
   python3 orchestrator.py"
 deliver: telegram
 
+<span class="code-comment"># Company Research - Daily 06:00 UTC</span>
+job_id: 996df4e980a9
+schedule: <span class="code-string">'0 6 * * *'</span>
+command: proot-distro login ubuntu -- bash -c "
+  cd /root/hermes_research/company_research && 
+  python3 orchestrator_company_autonomous.py"
+deliver: telegram
+
 <span class="code-comment"># Weekly Retrain (Planned)</span>
-job_id: <span class="code-string">'rjtt_weekly_retrain'</span>
+job_id: rjtt_weekly_retrain
 schedule: <span class="code-string">'0 2 * * 0'</span>  <span class="code-comment"># Sunday 2 AM</span>
 command: python3 retrain_model.py</pre></div>
-                </div>
             </div>
         </div>
 
         <!-- Footer -->
         <footer>
-            <p>RJTT Temperature Prediction Pipeline • Built with XGBoost, Isotonic Calibration, Polymarket API, Open-Meteo</p>
+            <p>RJTT Temperature Prediction Pipeline • Built with XGBoost, Isotonic Calibration, Polymarket API, Open-Meteo, Chart.js</p>
             <p>Last Updated: <span id="lastUpdate"></span> • <a href="https://github.com/P76071226/RTJJ_temperature_prediction" target="_blank" style="color: #00b4d8;">GitHub Repository</a></p>
         </footer>
     </div>
 
     <script>
-        // Tab switching
         function showTab(tabId) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -363,7 +488,7 @@ command: python3 retrain_model.py</pre></div>
             document.getElementById('tab-' + tabId).classList.add('active');
         }
 
-        // Backtest data (from actual run)
+        // Backtest data
         const backtestData = {
             dates: ["2026-07-12","2026-07-12","2026-07-12","2026-07-13","2026-07-13","2026-07-13","2026-07-17","2026-07-18","2026-07-18","2026-07-18","2026-07-18","2026-07-18","2026-07-18","2026-07-19","2026-07-19","2026-07-19","2026-07-20","2026-07-20","2026-07-21","2026-07-21","2026-07-22","2026-07-22","2026-07-22","2026-07-22","2026-07-23","2026-07-23","2026-07-23"],
             actualTemps: [29.5,29.5,29.5,29.5,29.5,29.5,29.6,27.9,27.9,27.9,27.9,27.9,27.9,30.6,30.6,30.6,33.4,33.4,34.5,34.5,33.5,33.5,33.5,33.5,34.0,34.0,34.0],
@@ -374,44 +499,12 @@ command: python3 retrain_model.py</pre></div>
             dirCorrect: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
         };
 
-        // Signal history data
-        const signals = [
-            {date:"2026-07-23", actual:34.0, interval:"34-35°C", market:0.117, model:0.072, edge:-0.045, result:"HOLD"},
-            {date:"2026-07-22", actual:33.5, interval:"33-34°C", market:0.337, model:0.242, edge:-0.095, result:"SELL"},
-            {date:"2026-07-21", actual:34.5, interval:"34-35°C", market:0.117, model:0.072, edge:-0.045, result:"HOLD"},
-            {date:"2026-07-20", actual:33.4, interval:"33-34°C", market:0.337, model:0.242, edge:-0.095, result:"SELL"},
-            {date:"2026-07-19", actual:30.6, interval:"30-31°C", market:0.020, model:0.000, edge:-0.020, result:"HOLD"},
-            {date:"2026-07-18", actual:27.9, interval:"27-28°C", market:0.350, model:0.000, edge:-0.350, result:"SELL"},
-            {date:"2026-07-17", actual:29.6, interval:"29-30°C", market:0.080, model:0.000, edge:-0.080, result:"HOLD"},
-            {date:"2026-07-13", actual:29.5, interval:"29-30°C", market:0.080, model:0.000, edge:-0.080, result:"HOLD"},
-            {date:"2026-07-12", actual:29.5, interval:"29-30°C", market:0.080, model:0.855, edge:0.775, result:"BUY ❌"},
-        ];
-
-        // Populate signal table
-        const signalTable = document.getElementById('signalTable');
-        signals.forEach(s => {
-            const edge = s.model - s.market;
-            const edgeClass = edge > 0.08 ? 'positive' : (edge < -0.08 ? 'negative' : 'warning');
-            const row = document.createElement('tr');
-            row.style.borderBottom = '1px solid #eef';
-            row.innerHTML = `
-                <td style="padding: 8px;">${s.date}</td>
-                <td style="padding: 8px;">${s.actual}°C</td>
-                <td style="padding: 8px; font-weight: 600;">${s.interval}</td>
-                <td style="padding: 8px;">${(s.market*100).toFixed(1)}%</td>
-                <td style="padding: 8px;">${(s.model*100).toFixed(1)}%</td>
-                <td style="padding: 8px;"><span class="metric-value ${edgeClass}">${(edge*100).toFixed(1)}pp</span></td>
-                <td style="padding: 8px;">${s.result}</td>
-            `;
-            signalTable.appendChild(row);
-        });
-
-        // Charts
         const chartColors = {
             model: '#00b4d8',
             market: '#ffb700',
             positive: '#00d97e',
-            negative: '#ff3366'
+            negative: '#ff3366',
+            warning: '#ffb700'
         };
 
         // Brier Score Chart
@@ -511,29 +604,27 @@ command: python3 retrain_model.py</pre></div>
         // Confusion Matrix
         const intervals = ['24-25','25-26','26-27','27-28','28-29','29-30','30-31','31-32','32-33','33-34','34-35','35-36','36-37'];
         const confusionData = [
-            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 24-25
-            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 25-26
-            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 26-27
-            [0,0,0,0,0,0,0,0,0,7,0,0,0], // 27-28: 7 actual, 0 pred
-            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 28-29
-            [0,0,0,0,0,0,0,0,0,14,0,0,0], // 29-30: 14 actual
-            [0,0,0,0,0,0,0,0,0,3,0,0,0], // 30-31: 3 actual
-            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 31-32
-            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 32-33
-            [0,0,0,0,0,0,0,0,0,0,6,0,0], // 33-34: 6 actual
-            [0,0,0,0,0,0,0,0,0,0,5,0,0], // 34-35: 5 actual
-            [0,0,0,0,0,0,0,0,0,0,0,0,0], // 35-36
-            [0,0,0,0,0,0,0,0,0,0,0,0,0]  // 36-37
+            [0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,7,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,14,0,0,0],
+            [0,0,0,0,0,0,0,0,0,3,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,6,0,0],
+            [0,0,0,0,0,0,0,0,0,0,5,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0]
         ];
 
         const confusionTable = document.getElementById('confusionMatrix');
-        // Header
         let header = '<tr><th>Actual \\ Pred</th>';
         intervals.forEach(i => header += `<th style="padding:6px;font-size:0.7rem;">${i}</th>`);
         header += '</tr>';
         confusionTable.querySelector('thead').innerHTML = header;
 
-        // Body
         let body = '';
         confusionData.forEach((row, i) => {
             body += `<tr><th style="padding:6px;background:#1a1a2e;color:white;font-size:0.7rem;">${intervals[i]}</th>`;
@@ -544,6 +635,54 @@ command: python3 retrain_model.py</pre></div>
             body += '</tr>';
         });
         confusionTable.querySelector('tbody').innerHTML = body;
+
+        // Signal History
+        const signals = [
+            {date:"2026-07-25", actual:null, interval:"29-30°C", market:0.040, model:0.735, edge:0.695, signal:"BUY", result:"PENDING"},
+            {date:"2026-07-23", actual:34.0, interval:"34-35°C", market:0.117, model:0.072, edge:-0.045, signal:"HOLD", result:"HOLD"},
+            {date:"2026-07-22", actual:33.5, interval:"33-34°C", market:0.337, model:0.242, edge:-0.095, signal:"SELL", result:"SELL"},
+            {date:"2026-07-21", actual:34.5, interval:"34-35°C", market:0.117, model:0.072, edge:-0.045, signal:"HOLD", result:"HOLD"},
+            {date:"2026-07-20", actual:33.4, interval:"33-34°C", market:0.337, model:0.242, edge:-0.095, signal:"SELL", result:"SELL"},
+            {date:"2026-07-19", actual:30.6, interval:"30-31°C", market:0.020, model:0.000, edge:-0.020, signal:"HOLD", result:"HOLD"},
+            {date:"2026-07-18", actual:27.9, interval:"27-28°C", market:0.350, model:0.000, edge:-0.350, signal:"SELL", result:"SELL"},
+            {date:"2026-07-17", actual:29.6, interval:"29-30°C", market:0.080, model:0.000, edge:-0.080, signal:"HOLD", result:"HOLD"},
+            {date:"2026-07-13", actual:29.5, interval:"29-30°C", market:0.080, model:0.000, edge:-0.080, signal:"HOLD", result:"HOLD"},
+            {date:"2026-07-12", actual:29.5, interval:"29-30°C", market:0.080, model:0.855, edge:0.775, signal:"BUY", result:"LOSS"},
+        ];
+
+        const signalTable = document.getElementById('signalTable');
+        signals.forEach(s => {
+            const edge = s.model - s.market;
+            const edgeClass = edge > 0.08 ? 'positive' : (edge < -0.08 ? 'negative' : 'warning');
+            const signalClass = s.signal === 'BUY' ? 'positive' : (s.signal === 'SELL' ? 'negative' : 'warning');
+            const row = document.createElement('tr');
+            row.style.borderBottom = '1px solid #eef';
+            row.innerHTML = `
+                <td style="padding: 8px;">${s.date}</td>
+                <td style="padding: 8px;">${s.actual ? s.actual + '°C' : 'T+1'}</td>
+                <td style="padding: 8px; font-weight: 600;">${s.interval}</td>
+                <td style="padding: 8px;">${(s.market*100).toFixed(1)}%</td>
+                <td style="padding: 8px;">${(s.model*100).toFixed(1)}%</td>
+                <td style="padding: 8px;"><span class="metric-value ${edgeClass}">${(edge*100).toFixed(1)}pp</span></td>
+                <td style="padding: 8px;"><span class="metric-value ${signalClass}">${s.signal}</span> ${s.result ? '→ ' + s.result : ''}</td>
+            `;
+            signalTable.appendChild(row);
+        });
+
+        // Sector Grid
+        const sectors = {
+            "Semiconductors": 5, "Cybersecurity": 4, "Semi Equipment": 4, "Fintech": 2, "Payments": 2, "Pharma": 2, "Gaming": 2, "Travel/OTA": 2, "Analog Semiconductors": 2, "EDA": 2, "OSAT": 2,
+            "Semiconductors/AI": 1, "Semiconductors/Software": 1, "SiC/Power": 1, "Memory": 1, "Power Semiconductors": 1, "IP/Semiconductors": 1, "Semi Materials": 1, "Semi Test": 1, "Semiconductor Equipment": 1,
+            "Ad Tech": 1, "Ad Tech/Gaming": 1, "Apparel": 1, "Audio Streaming": 1, "Auto/Energy": 1, "Banking": 1, "CRM/Marketing": 1, "CTV Platform": 1, "Cloud/Database": 1, "Communications": 1, "Communications API": 1, "Creative SaaS": 1, "Data Cloud": 1, "Data/AI Platform": 1, "Database": 1, "DevOps/Collaboration": 1, "E-commerce Platform": 1, "E-commerce/Cloud": 1, "Edge/Network": 1, "Game Engine": 1, "Identity": 1, "Lasers/Photonics": 1, "Luxury": 1, "Media/Entertainment": 1, "Mobility/Delivery": 1, "Observability": 1, "Retail": 1, "SaaS/Agreement Cloud": 1, "SaaS/CRM": 1, "SaaS/ITSM": 1, "Search/Observability": 1, "Simulation": 1, "Social Media/AI": 1, "Social/AR": 1, "Social/Commerce": 1, "Streaming": 1, "Tech/Advertising": 1, "Tech/Cloud": 1, "Travel/Marketplace": 1, "UGC Platform": 1
+        };
+
+        const sectorGrid = document.getElementById('sectorGrid');
+        Object.entries(sectors).sort((a,b) => b[1] - a[1]).forEach(([sector, count]) => {
+            const div = document.createElement('div');
+            div.className = 'sector-item';
+            div.innerHTML = `<strong>${sector}</strong> <span style="color:#666;">(${count})</span>`;
+            sectorGrid.appendChild(div);
+        });
 
         // Last update
         document.getElementById('lastUpdate').textContent = new Date().toLocaleString();
