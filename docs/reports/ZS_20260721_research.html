@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZS - Zscaler Company Research Report</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; background: #f8f9fa; }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+        header { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: white; padding: 3rem 2rem; border-radius: 16px 16px 0 0; margin-bottom: 0; }
+        header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        header .meta { display: flex; gap: 2rem; flex-wrap: wrap; opacity: 0.9; font-size: 1rem; }
+        .card { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e8ecf1; }
+        .card h2 { font-size: 1.4rem; font-weight: 600; color: #1e3a5f; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid #e8ecf1; display: flex; align-items: center; gap: 0.75rem; }
+        .card h2::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #2d5a87; }
+        .section { margin-bottom: 1.5rem; }
+        .section:last-child { margin-bottom: 0; }
+        .label { font-size: 0.85rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .content { color: #334155; }
+        .source { font-size: 0.8rem; color: #94a3b8; font-style: italic; margin-top: 0.5rem; }
+        .synthesis { background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%); border-left: 4px solid #2d5a87; }
+        .synthesis h2::before { background: #2d5a87; }
+        .key-metric { display: inline-block; background: #1e3a5f; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-right: 0.5rem; margin-bottom: 0.5rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        @media (max-width: 600px) { .container { padding: 1rem; } header { padding: 2rem 1.5rem; } header h1 { font-size: 1.8rem; } .card { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ZS — Zscaler</h1>
+            <div class="meta">
+                <span>📊 Sector: Cybersecurity</span>
+                <span>📅 Research Date: 2026-07-20</span>
+                <span>🔍 Day 201 of Year</span>
+            </div>
+        </header>
+
+        <div class="card synthesis">
+            <h2>🎯 Executive Synthesis</h2>
+            <div class="content">Zscaler (ZS) is the category-defining leader in cloud-delivered Zero Trust security (SSE/SASE). Unlike legacy firewall/VPN vendors who retrofit appliances, Zscaler built a global, multi-tenant proxy cloud from scratch - inspecting 300B+ requests/day with 9M+ SSL inspections/second. This architectural advantage creates a compounding data moat: every new customer improves threat detection for all.
+
+Business model is pure-play SaaS: per-user subscriptions ($72-375+/user/yr) with 81% gross margins and expanding operating leverage (22% non-GAAP op margin). ARR > $3B, NRR ~120%+ proves land-and-expand works.
+
+Customers are distributed enterprises (7,700+, 400+ Global 2000) replacing VPNs and securing cloud migration. Federal certifications (FedRAMP High, DoD IL5) create a high barrier in public sector.
+
+Why they win: (1) Cloud-native proxy architecture vs. lifted appliances, (2) Single-vendor platform breadth (ZIA+ZPA+ZDX+CASB+DLP), (3) Data scale to AI advantage, (4) Deep ecosystem integration + high switching costs. Risk: Valuation premium, competition from Microsoft (Entra), Palo Alto (Prisma), Netskope; macro slowdown in enterprise IT spend.</div>
+        </div>
+
+        <div class="card">
+            <h2>💰 How They Make Money</h2>
+            <div class="content">Zscaler operates a cloud-native Zero Trust security platform delivered as a service (SSE/SASE). Revenue comes from per-user, per-year subscriptions across two core product lines:
+
+1. Zscaler Internet Access (ZIA) - Secure Web Gateway, CASB, DLP, Firewall-as-a-Service, Sandbox. Priced $72-325+/user/year (Essentials to Business to Transformation tiers).
+2. Zscaler Private Access (ZPA) - Zero Trust Network Access (ZTNA) replacing VPNs. Priced $140-375+/user/year.
+
+Add-ons: Zscaler Digital Experience (ZDX) ~$2-5/user/mo, Workload Protection, Posture Control.
+
+Business model: High-margin SaaS with ~81% gross margins, expanding operating leverage (22% non-GAAP operating margin in Q4 FY24). ARR > $3B (crossed $2.5B in Q4 FY24, guided to $3B+). Land-and-expand: start with ZIA, upsell ZPA, ZDX, workloads.</div>
+            {% if business_model_sources %}
+            <div class="source">Sources: Zscaler IR (Q4 FY24 earnings), venn.com pricing guide, GSA government pricing, UnderDefense pricing analysis</div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <h2>👥 Who Their Customers Are</h2>
+            <div class="content">Target: Distributed enterprises (mid-market to Fortune 500) with hybrid work, cloud migration, and legacy VPN/firewall pain.
+
+Segments:
+- Enterprise (1,000+ users) - core, high NRR
+- Federal/Government - FedRAMP High, DoD IL5
+- Education - discounted EDU bundles
+- Service Providers / MSSPs - white-label
+
+Geography: Global - Americas (~55%), EMEA (~25%), APJ (~20%).
+
+Customer count: ~7,700+ (including 400+ of Global 2000). Net Revenue Retention ~120%+. Low concentration - no single customer >5% of revenue.</div>
+            {% if customers_sources %}
+            <div class="source">Sources: Zscaler IR presentations, WWT product overview, Gartner Peer Insights, CMC Markets analysis</div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <h2>💲 Pricing Model</h2>
+            <div class="content">Model: Per-user, per-year subscription with tiered editions (Essentials to Business to Transformation).
+
+Price bands (annual per user):
+- ZIA: $72 (Essentials) to $90 (Business) to $325+ (Transformation)
+- ZPA: $140 to $375+
+- Bundled ZIA+ZPA: ~$468 (government schedule)
+- Add-ons: ZDX $24-60/user/yr, Workloads ~$30K/yr base
+
+Discounting: Volume tiers - 34-35% per-user discount at 1,000+ seats. First-year TCO typically 1.3-1.5x subscription (professional services, training, internal resources).
+
+No public list pricing - all deals via direct sales/channel. Government GSA schedule provides transparency.</div>
+            {% if pricing_sources %}
+            <div class="source">Sources: venn.com Zscaler pricing 2026, checkthat.ai TCO guide, GSA Advantage pricing PDF, UnderDefense ultimate guide</div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <h2>🏰 Why They Win (Moat)</h2>
+            <div class="content">1. Architectural Moat - Cloud-Native Proxy
+Built from ground up as multi-tenant cloud proxy (not lifted-and-shifted appliance). Inspects all traffic (SSL/TLS) at line rate - 300B+ requests/day, 9M+ SSL inspections/sec. Competitors (Palo Alto, Fortinet, Cisco) retrofit legacy stacks.
+
+2. Data/Scale Network Effect
+300B+ daily transactions feed AI/ML models for threat detection, anomaly scoring, policy optimization. New customers instantly benefit from global threat intelligence.
+
+3. Platform Breadth - Single-Vendor SASE
+ZIA + ZPA + ZDX + CASB + DLP + FWaaS + Sandbox on one platform. Eliminates point-product sprawl. Gartner Magic Quadrant Leader for SSE (5+ years).
+
+4. Zero Trust Exchange - Least-Privilege by Default
+User-to-app (not network-to-network) segmentation. No lateral movement. Patent portfolio (300+ patents) on proxy architecture, SSL inspection, policy engine.
+
+5. Switching Costs / Land-and-Expand
+Deep integration with IdP (Okta, Azure AD), SIEM, SOAR, endpoint (CrowdStrike, SentinelOne). 120%+ NRR proves expansion.
+
+6. Federal/Regulatory Certifications
+FedRAMP High, DoD IL5, StateRAMP - high barrier for new entrants in public sector.</div>
+            {% if moat_sources %}
+            <div class="source">Sources: Zscaler Zero Trust Exchange architecture docs, ZK Research SASE analysis, Tufin SASE explainer, Gartner MQ SSE, WWT product overview</div>
+            {% endif %}
+        </div>
+
+        <div class="card">
+            <h2>📋 Research Metadata</h2>
+            <div class="grid">
+                <div>
+                    <div class="label">Company</div>
+                    <div class="content">Zscaler (ZS)</div>
+                </div>
+                <div>
+                    <div class="label">Sector</div>
+                    <div class="content">Cybersecurity</div>
+                </div>
+                <div>
+                    <div class="label">Research Date</div>
+                    <div class="content">2026-07-20</div>
+                </div>
+                <div>
+                    <div class="label">Selection Method</div>
+                    <div class="content">Day 201 of year rotation</div>
+                </div>
+            </div>
+        </div>
+
+        <footer style="text-align: center; padding: 2rem; color: #64748b; font-size: 0.85rem;">
+            Generated by Company Research Pipeline · 2026-07-21 00:41:44
+        </footer>
+    </div>
+</body>
+</html>

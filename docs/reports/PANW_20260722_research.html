@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PANW — Palo Alto Networks Research</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0f111a; color: #e2e8f0; line-height: 1.7;
+        }
+        .container { max-width: 960px; margin: 0 auto; padding: 2rem; }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: linear-gradient(135deg, #1a2332 0%, #1e3a5f 40%, #2d5a87 100%);
+            padding: 3rem 2.5rem; border-radius: 20px 20px 0 0;
+            position: relative; overflow: hidden;
+        }
+        .header::before {
+            content: ''; position: absolute; top: -50%; right: -20%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(59,130,246,.12) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+        .header h1 {
+            font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em;
+            position: relative; z-index: 1;
+        }
+        .header .ticker-badge {
+            display: inline-block; background: rgba(255,255,255,.12);
+            padding: .25rem .75rem; border-radius: 6px;
+            font-size: .8rem; font-weight: 600; letter-spacing: .05em;
+            margin-bottom: .75rem;
+        }
+        .header-meta {
+            display: flex; gap: 1.5rem; flex-wrap: wrap;
+            margin-top: 1.25rem; position: relative; z-index: 1;
+        }
+        .header-meta span {
+            background: rgba(255,255,255,.08); padding: .4rem .9rem;
+            border-radius: 8px; font-size: .85rem;
+        }
+
+        /* ===== CARDS ===== */
+        .card {
+            background: #161b28; border: 1px solid #1e293b;
+            border-radius: 14px; padding: 2rem; margin-bottom: 1.25rem;
+            transition: border-color .2s;
+        }
+        .card:hover { border-color: #2d5a87; }
+        .card h2 {
+            font-size: 1.2rem; font-weight: 700; color: #60a5fa;
+            margin-bottom: 1rem; padding-bottom: .75rem;
+            border-bottom: 2px solid #1e293b;
+            display: flex; align-items: center; gap: .65rem;
+        }
+
+        /* ===== SCORE BADGE ===== */
+        .score-badge {
+            display: inline-flex; align-items: center; gap: .4rem;
+            padding: .25rem .7rem; border-radius: 20px;
+            font-size: .75rem; font-weight: 600; white-space: nowrap;
+        }
+        .score-high { background: rgba(34,197,94,.15); color: #22c55e; }
+        .score-mid  { background: rgba(234,179,8,.15); color: #eab308; }
+        .score-low  { background: rgba(239,68,68,.15); color: #ef4444; }
+        .score-neutral { background: rgba(148,163,184,.15); color: #94a3b8; }
+
+        /* ===== METRIC BAR ===== */
+        .metric-row { display: flex; align-items: center; gap: 1rem; margin: .6rem 0; }
+        .metric-label { min-width: 120px; font-size: .85rem; color: #94a3b8; font-weight: 500; }
+        .metric-bar-bg {
+            flex: 1; height: 8px; background: #1e293b;
+            border-radius: 4px; overflow: hidden;
+        }
+        .metric-bar-fill {
+            height: 100%; border-radius: 4px;
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+            transition: width 1s ease;
+        }
+        .metric-value { min-width: 48px; font-size: .85rem; font-weight: 600; text-align: right; }
+
+        /* ===== KEY STATS GRID ===== */
+        .stats-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 1rem; margin: 1rem 0;
+        }
+        .stat-card {
+            background: #0f111a; border: 1px solid #1e293b;
+            border-radius: 10px; padding: 1.1rem; text-align: center;
+        }
+        .stat-card .stat-icon { font-size: 1.4rem; margin-bottom: .3rem; }
+        .stat-card .stat-value { font-size: 1.3rem; font-weight: 700; color: #f1f5f9; }
+        .stat-card .stat-label { font-size: .75rem; color: #64748b; margin-top: .2rem; font-weight: 500; }
+
+        /* ===== MOAT METER ===== */
+        .moat-meter {
+            background: #0f111a; border: 1px solid #1e293b;
+            border-radius: 10px; padding: 1.2rem; margin-top: 1rem;
+        }
+        .moat-meter .gauge {
+            display: flex; gap: 4px; margin-top: .75rem;
+        }
+        .moat-meter .gauge-bar {
+            flex: 1; height: 8px; border-radius: 4px;
+            background: #1e293b; transition: background .3s;
+        }
+        .moat-meter .gauge-bar.filled-strong { background: #22c55e; }
+        .moat-meter .gauge-bar.filled-mid { background: #eab308; }
+        .moat-meter .gauge-bar.filled-weak { background: #ef4444; }
+        .moat-meter .gauge-label {
+            display: flex; justify-content: space-between;
+            font-size: .75rem; color: #64748b; margin-top: .4rem;
+        }
+
+        /* ===== SOURCE TAGS ===== */
+        .source-tag {
+            display: inline-block; background: #0f111a;
+            padding: .25rem .65rem; border-radius: 6px;
+            font-size: .7rem; color: #64748b; margin: .2rem .3rem .2rem 0;
+            border: 1px solid #1e293b;
+        }
+
+        /* ===== TYPEOGRAPHY ===== */
+        .content { color: #cbd5e1; }
+        .content strong { color: #f1f5f9; }
+        .card ul, .card ol { padding-left: 1.3rem; margin: .5rem 0; }
+        .card li { margin: .25rem 0; }
+        .content em { color: #60a5fa; font-style: normal; font-weight: 500; }
+
+        /* ===== PRICING TIERS ===== */
+        .pricing-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: .8rem; margin: 1rem 0;
+        }
+        .pricing-tier {
+            background: #0f111a; border: 1px solid #1e293b;
+            border-radius: 10px; padding: 1rem; text-align: center;
+        }
+        .pricing-tier .tier-name { font-weight: 600; color: #60a5fa; font-size: .9rem; }
+        .pricing-tier .tier-price { font-size: 1.3rem; font-weight: 700; margin: .3rem 0; }
+        .pricing-tier .tier-desc { font-size: .75rem; color: #64748b; }
+
+        /* ===== PILLS ===== */
+        .pill {
+            display: inline-block; padding: .2rem .7rem; border-radius: 20px;
+            font-size: .75rem; font-weight: 600; margin: .2rem;
+        }
+        .pill-blue  { background: rgba(59,130,246,.15); color: #60a5fa; }
+        .pill-green { background: rgba(34,197,94,.15); color: #22c55e; }
+        .pill-yellow{ background: rgba(234,179,8,.15); color: #eab308; }
+        .pill-red   { background: rgba(239,68,68,.15); color: #ef4444; }
+        .pill-purple{ background: rgba(168,85,247,.15); color: #a855f7; }
+
+        /* ===== RISKS ===== */
+        .risk-row { display: flex; align-items: flex-start; gap: .6rem; margin: .5rem 0; }
+        .risk-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: .5rem; flex-shrink: 0; }
+
+        footer { text-align: center; padding: 2rem; color: #475569; font-size: .8rem; border-top: 1px solid #1e293b; margin-top: 1rem; }
+
+        @media (max-width: 600px) {
+            .container { padding: 1rem; }
+            .header { padding: 2rem 1.5rem; }
+            .header h1 { font-size: 1.7rem; }
+            .card { padding: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <div class="ticker-badge">PANW</div>
+        <h1>Palo Alto Networks</h1>
+        <div class="header-meta">
+            <span>📊 Cybersecurity</span>
+            <span>📅 2026-07-22</span>
+        </div>
+    </div>
+<div class="card"><h2>📊 Key Metrics Dashboard</h2><div class="stats-grid"><div class="stat-card"><div class="stat-icon">🛡️</div><div class="stat-value">PANW</div><div class="stat-label">Ticker</div></div><div class="stat-card"><div class="stat-icon">🏢</div><div class="stat-value" style="font-size:.9rem;word-wrap:break-word;">Cybersecurity</div><div class="stat-label">Sector</div></div><div class="stat-card"><div class="stat-icon">📅</div><div class="stat-value">203</div><div class="stat-label">Day of Year</div></div><div class="stat-card"><div class="stat-icon">📋</div><div class="stat-value" style="font-size:.9rem;">#78</div><div class="stat-label">in Rotation</div></div></div></div><div class="card" style="border-left:3px solid #60a5fa;"><h2>🎯 Executive Synthesis</h2><div class="content">Palo Alto Networks (PANW) is executing the **definitive platformization playbook** in cybersecurity — consolidating network, cloud, and SecOps into three unified platforms (Strata/Prisma/Cortex) with shared data layer and AI. Unlike Zscaler (SASE-only) or CrowdStrike (endpoint/SIEM-only), PANW owns the full stack from hardware firewall (SP3 ASIC) to cloud SASE (Prisma Access) to AI-driven SecOps (Cortex XSIAM).
+
+**Business model** shifting from appliance-led to software/SaaS-led: 56% of product revenue now software, NGS ARR $3.9B (+35% YoY), targeting $20B by FY30. **Platformization = free modules → lock-in → expansion**. 110 new platformized customers in Q3 FY26, goal 4,000+ by FY30.
+
+**Financials (Q4 FY25)**: Revenue $2.59B (+15% YoY), non-GAAP operating margin 30.3% (+1.9pp), RPO +24% YoY, gross margin 76.1%. **Profitability inflection** as mix shifts to software.
+
+**Why they win**: (1) Only full-stack platform (hardware + cloud + SecOps), (2) Platformization flywheel (free → adopt → expand → renew), (3) Proprietary ASIC + shared threat intel, (4) Federal certifications + channel depth, (5) Relentless M&A filling gaps. **Risks**: Gross margin pressure (76.1% down 0.4pp), SBC dilution (shares +6.8% YoY), execution on $20B ARR target, competition from Microsoft (Entra/Sentinel) and CrowdStrike (Falcon platform).</div></div><div class="card"><h2>💰 How They Make Money</h2><div class="content"><div class="pricing-grid"><div class="pricing-tier"><div class="tier-name">Palo Alto</div><div class="tier-price">N/A</div></div><div class="pricing-tier"><div class="tier-name">Networks</div><div class="tier-price">N/A</div></div><div class="pricing-tier"><div class="tier-name">PANW</div><div class="tier-price">N/A</div></div><div class="pricing-tier"><div class="tier-name">Strata</div><div class="tier-price">N/A</div></div></div><div style="margin-top: .5rem;">Palo Alto Networks (PANW) operates a **platformization strategy** — consolidating network security, cloud security, and security operations into three unified platforms: Strata (Network Security), Prisma (Cloud Security), and Cortex (Security Operations). Revenue comes from:</div><li>**Product Revenue** (~56% software form factor in Q4 FY25): Next-Gen Firewalls (hardware + VM-Series), Prisma Cloud, Cortex XSIAM/XSOAR, VM-Series, CN-Series.</li><li>**Subscription Revenue** (recurring): Threat prevention, URL filtering, WildFire sandbox, DNS security, IoT security, SD-WAN, AIOps.</li><li>**Support/Professional Services**: Premium support, consulting, managed services.</li><div style="margin-top: .5rem;">**Key Metrics (Q4 FY25)**: Total revenue $2.59B (+15% YoY), Product revenue $2.08B (+13% YoY, 80% of total), NGS ARR ~$3.9B (+35% YoY). **Target: 4,000+ platformized customers, $20B NGS ARR by FY30**. Platformization = free short-term products to secure long-term lock-in. RPO growth +24% YoY (outpacing revenue). Gross margin 76.1% (product 78.2%, services 75.6%). Non-GAAP operating margin 30.3% (+1.9pp YoY).</div></div><div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid #1e293b;display:flex;flex-wrap:wrap;gap:.2rem;"><span class="source-tag">Yahoo Finance platformization analysis</span><span class="source-tag">Sergey Substack Q4 FY25 earnings</span><span class="source-tag">Futurum Group Q4 FY25 analysis</span><span class="source-tag">PRNewswire FY25 results</span><span class="source-tag">Forbes platformization growth article</span></div></div><div class="card"><h2>👥 Who Their Customers Are</h2><div class="content"><div style="margin-top: .5rem;">**Target**: Enterprise and mid-market organizations consolidating security vendors. **Customer base**: 80,000+ customers globally. **Platformization traction**: 110 new platformized customers in Q3 FY26 (including 20 from CyberArk/Chronosphere acquisitions). **Goal: 4,000+ platformized customers by FY30**.</div><div style="margin-top: .5rem;">**Segments**: Large enterprises (Fortune 500), federal/government, service providers (Verizon partnership), SMB via Prisma Access. **Geography**: Global with strong Americas presence. **Consolidation thesis**: CISOs replacing point products (Zscaler, CrowdStrike, Microsoft, SentinelOne) with single PANW platform. **Net new ARR**: Record levels in FY25. **RPO growth +24% YoY** indicates strong future revenue visibility.</div></div><div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid #1e293b;display:flex;flex-wrap:wrap;gap:.2rem;"><span class="source-tag">Yahoo Finance platformization article</span><span class="source-tag">Sergey Substack Q4 FY25 earnings</span><span class="source-tag">Futurum Group analysis</span><span class="source-tag">PRNewswire FY25 results</span><span class="source-tag">Swellpulse company overview</span></div></div><div class="card"><h2>💲 Pricing Model</h2><div class="content"><div style="margin-top: .5rem;">**Model**: Hybrid - hardware appliances + software subscriptions (VM-Series, CN-Series) + SaaS (Prisma Access, Cortex XSIAM). **Pricing structures**:</div><li>**Firewall appliances**: Throughput-based pricing (PA-Series: PA-400 to PA-7000).</li><li>**VM-Series/CN-Series**: vCPU-based or throughput-based licensing.</li><li>**Prisma Access**: Per-user or per-bandwidth SASE pricing.</li><li>**Cortex XSIAM**: Per-GB ingestion + per-endpoint licensing.</li><li>**Subscriptions**: Annual renewal for threat prevention, WildFire, URL filtering, DNS security, IoT security, SD-WAN.</li><div style="margin-top: .5rem;">**Platformization pricing**: Free short-term access to select modules to drive adoption → long-term contract lock-in. **No public list pricing** — all enterprise deals via direct sales/channel. **TCO advantage**: Platform consolidation reduces total vendor spend vs. best-of-breed.</div></div><div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid #1e293b;display:flex;flex-wrap:wrap;gap:.2rem;"><span class="source-tag">Swellpulse company overview (throughput-based pricing)</span><span class="source-tag">Sergey Substack earnings analysis</span><span class="source-tag">Yahoo Finance platformization strategy</span><span class="source-tag">Futurum Group Q4 FY25 analysis</span></div></div><div class="card"><h2>🏰 Why They Win (Moat)</h2><div class="content"><div style="margin-top: .5rem;">**1. Platform Architecture Moat**: Three integrated platforms (Strata/Prisma/Cortex) sharing data, analytics, AI — eliminates point-product fragmentation. Competitors (Zscaler, CrowdStrike, Fortinet, Microsoft) lack full stack.</div><div style="margin-top: .5rem;">**2. Platformization Lock-in**: Free short-term modules → multi-year commitments. 110 new platformized customers in Q3 FY26. **Switching costs extreme** once customer adopts 2+ platforms.</div><div style="margin-top: .5rem;">**3. Data/Scale Network Effect**: 80,000+ customers, massive threat intelligence feed (AutoFocus, WildFire) → better detection for all. Cortex XSIAM ingests petabytes.</div><div style="margin-top: .5rem;">**4. Hardware + Software Integration**: Proprietary SP3 ASIC (PA-7000 series) enables performance/price competitors can't match with merchant silicon.</div><div style="margin-top: .5rem;">**5. Channel/Partner Ecosystem**: Deep MSSP/VAR relationships (Verizon, major SIs). Platformization = partner profitability (more modules = more services revenue).</div><div style="margin-top: .5rem;">**6. Acquisition Engine**: Strategic tuck-ins (CyberArk $3.35B, Chronosphere, Protect AI ~$500M) fill gaps faster than organic dev.</div><div style="margin-top: .5rem;">**7. Federal/Regulatory Certifications**: FedRAMP High, DoD IL5, Common Criteria — high barrier for new entrants in public sector.</div>
+    <div class="moat-meter">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-weight:600;font-size:.9rem;">🏰 Moat Strength</span>
+            <span style="font-weight:700;color:#22c55e;">10/10 — Very Strong</span>
+        </div>
+        <div class="gauge"><div class="gauge-bar filled-strong"></div><div class="gauge-bar filled-strong"></div><div class="gauge-bar filled-strong"></div><div class="gauge-bar filled-strong"></div><div class="gauge-bar filled-strong"></div><div class="gauge-bar filled-strong"></div><div class="gauge-bar filled-strong"></div><div class="gauge-bar filled-strong"></div><div class="gauge-bar filled-strong"></div><div class="gauge-bar filled-strong"></div></div>
+        <div class="gauge-label"><span>Weak</span><span>Very Strong</span></div>
+    </div><div style="margin-top:1rem;"><div style="font-weight:600;font-size:.9rem;margin-bottom:.5rem;">⚠️ Key Risks</div><div class="risk-row"><div class="risk-dot" style="background:#ef4444;"></div><div style="font-size:.85rem;color:#94a3b8;">intelligence feed (AutoFocus, WildFire) → better detection for all.</div></div><div class="risk-row"><div class="risk-dot" style="background:#ef4444;"></div><div style="font-size:.85rem;color:#94a3b8;">intel, (4) Federal certifications + channel depth, (5) Relentless M&A filling gaps.</div></div><div class="risk-row"><div class="risk-dot" style="background:#ef4444;"></div><div style="font-size:.85rem;color:#94a3b8;">(76.</div></div><div class="risk-row"><div class="risk-dot" style="background:#ef4444;"></div><div style="font-size:.85rem;color:#94a3b8;">from Microsoft (Entra/Sentinel) and CrowdStrike (Falcon platform).</div></div></div></div><div style="margin-top:1rem;padding-top:.75rem;border-top:1px solid #1e293b;display:flex;flex-wrap:wrap;gap:.2rem;"><span class="source-tag">Sergey Substack Q4 FY25 earnings</span><span class="source-tag">Sergey platformization pays off analysis</span><span class="source-tag">Swellpulse company overview</span><span class="source-tag">Strategy of Security Protect AI acquisition analysis</span><span class="source-tag">Yahoo Finance platformization drive article</span></div></div>
+    <footer>Generated by Company Research Pipeline · 2026-07-22 22:08:13</footer>
+</div>
+</body>
+</html>

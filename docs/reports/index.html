@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Research Reports - RJTT Pipeline</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); color: white; padding: 60px 20px; margin: -20px -20px 40px; text-align: center; }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        .subtitle { font-size: 1.2rem; opacity: 0.9; }
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin: 5px; }
+        .badge-purple { background: #a855f7; color: #fff; }
+        .badge-info { background: #00b4d8; color: #fff; }
+        .badge-success { background: #00d97e; color: #000; }
+        
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; margin-bottom: 40px; }
+        .report-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: transform 0.2s, box-shadow 0.2s; border: 1px solid #eef; }
+        .report-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(0,0,0,0.12); }
+        .report-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .report-meta { display: flex; flex-direction: column; gap: 4px; }
+        .report-company { font-size: 1.4rem; font-weight: 700; color: #1a1a2e; }
+        .report-ticker { color: #00b4d8; font-weight: 600; font-size: 0.9rem; }
+        .report-date { color: #666; font-size: 0.85rem; }
+        .report-sector { background: #f0f4f8; color: #00b4d8; padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; white-space: nowrap; }
+        .report-dimensions { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0; }
+        .dim-badge { background: #fff3cd; color: #856404; padding: 4px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; }
+        .report-link { display: inline-block; padding: 12px 24px; background: linear-gradient(135deg, #00b4d8, #00d97e); color: white; border-radius: 8px; text-decoration: none; font-weight: 600; transition: transform 0.2s, box-shadow 0.2s; }
+        .report-link:hover { transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,180,216,0.4); }
+        .report-link:active { transform: translateY(0); }
+        
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px; }
+        .stat-card { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-align: center; }
+        .stat-value { font-size: 2.5rem; font-weight: 700; color: #1a1a2e; }
+        .stat-label { color: #666; font-size: 0.9rem; margin-top: 4px; }
+        
+        .back-link { display: inline-flex; align-items: center; gap: 8px; color: #00b4d8; text-decoration: none; font-weight: 600; margin-bottom: 24px; }
+        .back-link:hover { text-decoration: underline; }
+        
+        footer { text-align: center; padding: 40px; color: #666; font-size: 0.9rem; }
+        
+        .filter-bar { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+        .filter-btn { padding: 8px 16px; background: white; border: 2px solid #eef; border-radius: 20px; cursor: pointer; font-weight: 600; transition: all 0.2s; }
+        .filter-btn.active, .filter-btn:hover { background: #1a1a2e; color: white; border-color: #1a1a2e; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🏢 Company Research Reports</h1>
+        <p class="subtitle">Autonomous Daily Research Pipeline • 78 Company Universe • 4 Dimensions</p>
+        <div>
+            <span class="badge badge-purple">78 Companies</span>
+            <span class="badge badge-info">50+ Sectors</span>
+            <span class="badge badge-success">Daily 06:00 UTC</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <a href="../index.html" class="back-link">← Back to Main Dashboard</a>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="totalReports">8</div>
+                <div class="stat-label">Reports Generated</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="uniqueCompanies">7</div>
+                <div class="stat-label">Unique Companies</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="dateRange">Jul 20-26</div>
+                <div class="stat-label">Date Range</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="totalSectors">6</div>
+                <div class="stat-label">Sectors Covered</div>
+            </div>
+        </div>
+
+        <div class="filter-bar">
+            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn" data-filter="cybersecurity">Cybersecurity</button>
+            <button class="filter-btn" data-filter="edge-network">Edge/Network</button>
+            <button class="filter-btn" data-filter="cloud">Cloud/DevOps</button>
+        </div>
+
+        <div class="grid" id="reportsGrid"></div>
+    </div>
+
+    <footer>
+        <p>RJTT Pipeline • Company Research • <a href="https://github.com/P76071226/RTJJ_temperature_prediction" target="_blank" style="color: #00b4d8;">GitHub</a></p>
+    </footer>
+
+    <script>
+        const reports = [
+            { file: "NET_20260726_research.html", company: "Cloudflare", ticker: "NET", date: "2026-07-26", sector: "Edge/Network", dimensions: ["Business Model", "Customers", "Pricing", "Moat"] },
+            { file: "DDOG_20260725_research.html", company: "Datadog", ticker: "DDOG", date: "2026-07-25", sector: "Observability", dimensions: ["Business Model", "Customers", "Pricing", "Moat"] },
+            { file: "FTNT_20260723_research.html", company: "Fortinet", ticker: "FTNT", date: "2026-07-23", sector: "Cybersecurity", dimensions: ["Business Model", "Customers", "Pricing", "Moat"] },
+            { file: "PANW_20260723_research.html", company: "Palo Alto Networks", ticker: "PANW", date: "2026-07-23", sector: "Cybersecurity", dimensions: ["Business Model", "Customers", "Pricing", "Moat"] },
+            { file: "PANW_20260722_research.html", company: "Palo Alto Networks", ticker: "PANW", date: "2026-07-22", sector: "Cybersecurity", dimensions: ["Business Model", "Customers", "Pricing", "Moat"] },
+            { file: "ZS_20260721_research.html", company: "Zscaler", ticker: "ZS", date: "2026-07-21", sector: "Cybersecurity", dimensions: ["Business Model", "Customers", "Pricing", "Moat"] },
+            { file: "CRWD_20260721_research.html", company: "CrowdStrike", ticker: "CRWD", date: "2026-07-21", sector: "Cybersecurity", dimensions: ["Business Model", "Customers", "Pricing", "Moat"] },
+            { file: "ZS_20260720_research.html", company: "Zscaler", ticker: "ZS", date: "2026-07-20", sector: "Cybersecurity", dimensions: ["Business Model", "Customers", "Pricing", "Moat"] },
+        ];
+
+        const sectorMap = {
+            "Cybersecurity": "cybersecurity",
+            "Edge/Network": "edge-network",
+            "Observability": "cloud"
+        };
+
+        function renderReports(filter = "all") {
+            const grid = document.getElementById("reportsGrid");
+            const filtered = filter === "all" ? reports : reports.filter(r => sectorMap[r.sector] === filter);
+            
+            grid.innerHTML = filtered.map(r => `
+                <div class="report-card" data-sector="${sectorMap[r.sector] || ''}">
+                    <div class="report-header">
+                        <div class="report-meta">
+                            <div class="report-company">${r.company}</div>
+                            <div class="report-ticker">${r.ticker}</div>
+                            <div class="report-date">${r.date}</div>
+                        </div>
+                        <span class="report-sector">${r.sector}</span>
+                    </div>
+                    <div class="report-dimensions">
+                        ${r.dimensions.map(d => `<span class="dim-badge">${d}</span>`).join('')}
+                    </div>
+                    <a href="${r.file}" class="report-link" target="_blank">View Full Report →</a>
+                </div>
+            `).join('');
+            
+            document.getElementById("totalReports").textContent = reports.length;
+            document.getElementById("uniqueCompanies").textContent = [...new Set(reports.map(r => r.ticker))].length;
+            const dates = reports.map(r => r.date).sort();
+            document.getElementById("dateRange").textContent = `${dates[0].slice(5)} - ${dates[dates.length-1].slice(5)}`;
+            document.getElementById("totalSectors").textContent = [...new Set(reports.map(r => r.sector))].length;
+        }
+
+        document.querySelectorAll(".filter-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+                btn.classList.add("active");
+                renderReports(btn.dataset.filter);
+            });
+        });
+
+        renderReports();
+    </script>
+</body>
+</html>
