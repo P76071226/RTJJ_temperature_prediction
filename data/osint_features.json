@@ -1,17 +1,17 @@
 {
-  "date": "2026-07-26",
-  "temp_forecast_mean": 27.2,
-  "temp_forecast_std": 2.148061141277563,
-  "cloud_cover_pct": 47.958333333333336,
-  "precip_forecast_mm": 7.5,
-  "wind_speed_avg": 5.779166666666666,
-  "wind_dir_avg": 137.99316834151034,
+  "date": "2026-07-27",
+  "temp_forecast_mean": 27.02916666666667,
+  "temp_forecast_std": 2.2350389941912767,
+  "cloud_cover_pct": 61.125,
+  "precip_forecast_mm": 12.6,
+  "wind_speed_avg": 4.9750000000000005,
+  "wind_dir_avg": 260.46849863179136,
   "metar_temp_c": 26,
   "metar_dewpoint_c": 7,
   "metar_wind_present": true,
   "metar_cloud_present": true,
-  "sea_breeze_flag": 1,
+  "sea_breeze_flag": 0,
   "month": 7,
-  "weekday": 6,
-  "day": 26
+  "weekday": 0,
+  "day": 27
 }
