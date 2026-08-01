@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HUBS - HubSpot Company Research Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        header { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: white; padding: 3rem 2rem; border-radius: 16px 16px 0 0; margin-bottom: 0; }
+        header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        header .meta { display: flex; gap: 2rem; flex-wrap: wrap; opacity: 0.9; font-size: 1rem; }
+        .card { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e8ecf1; }
+        .card h2 { font-size: 1.4rem; font-weight: 600; color: #1e3a5f; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid #e8ecf1; display: flex; align-items: center; gap: 0.75rem; }
+        .card h2::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #2d5a87; }
+        .section { margin-bottom: 1.5rem; }
+        .section:last-child { margin-bottom: 0; }
+        .label { font-size: 0.85rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .content { color: #334155; white-space: pre-wrap; }
+        .source { font-size: 0.8rem; color: #94a3b8; font-style: italic; margin-top: 0.5rem; }
+        .synthesis { background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%); border-left: 4px solid #2d5a87; }
+        .synthesis h2::before { background: #2d5a87; }
+        .key-metric { display: inline-block; background: #1e3a5f; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-right: 0.5rem; margin-bottom: 0.5rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .chart-container { position: relative; height: 300px; margin: 1rem 0; }
+        .metric-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+        .metric-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; text-align: center; }
+        .metric-card .value { font-size: 2rem; font-weight: 700; color: #1e3a5f; }
+        .metric-card .label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+        .metric-card.positive .value { color: #059669; }
+        .metric-card.negative .value { color: #dc2626; }
+        @media (max-width: 600px) { .container { padding: 1rem; } header { padding: 2rem 1.5rem; } header h1 { font-size: 1.8rem; } .card { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>HUBS — HubSpot</h1>
+            <div class="meta">
+                <span>📊 Sector: CRM/Marketing</span>
+                <span>📅 Research Date: 2026-08-01</span>
+                <span>🔍 Day 213 of Year</span>
+            </div>
+        </header>
+
+        <div class="card synthesis">
+            <h2>🎯 Executive Synthesis</h2>
+            <div class="content">HubSpot (HUBS) is at an inflection point: executing an aggressive AI-first pivot (Breeze agents, Revenue Hub, AEO) while defending its SMB moat from AI-native disruptors (Attio, Day AI, Clarify). Q1 2026 showed resilience: 288K+ customers, NRR 103%, platform adoption accelerating (half on 3+ Hubs, 3+ Hub customers >$40K ARR). The Revenue Hub rebrand and Breeze agentic layer aim to move upmarket and increase ARPU. Key catalysts: Breeze 2.0 adoption, Enterprise tier ramp, AI credit monetization. Risks: AI natives eroding manual-entry moat (~35% stock drop in 2025), Salesforce mid-market pressure, margin pressure from AI investment. At ~$12B market cap (~4x FY2025 revenue), valuation prices in disruption risk but may underweight platform lock-in and AI option value if Breeze achieves enterprise-grade agentic accuracy.</div>
+        </div>
+
+        <div class="card">
+            <h2>📈 Key Metrics Dashboard</h2>
+            <div class="metric-cards">
+                
+        <div class="metric-card"><div class="value">$12B</div><div class="label">Market Cap</div></div>
+        <div class="metric-card"><div class="value">$3.13B</div><div class="label">Revenue (FY2025)</div></div>
+        <div class="metric-card"><div class="value">$897M</div><div class="label">Revenue (Q1 2026 Guidance)</div></div>
+        <div class="metric-card"><div class="value">~80%</div><div class="label">Gross Margin</div></div>
+        <div class="metric-card"><div class="value">103%</div><div class="label">Net Revenue Retention</div></div>
+        <div class="metric-card"><div class="value">288K</div><div class="label">Paying Customers</div></div>
+        
+            </div>
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="stockChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💰 How They Make Money</h2>
+            <div class="content">HubSpot provides an all-in-one CRM platform for SMBs with 6 Hubs: Marketing, Sales, Service, Content, Operations, and Commerce (formerly Commerce Hub, rebranded to Revenue Hub in Q2 2026). Revenue model: subscription per-seat + contact tiers + hub base fees. FY2025 revenue ~$3.13B, Q1 2026 revenue ~$897M (guidance). 288,706 paying customers across 135+ countries. Average subscription revenue per customer ~$11,414. Net revenue retention 103% (Q1 2026), expanding 1-2 points YoY expected. Platform strategy: AI-first transformation with Breeze AI agents (Customer Agent, Prospecting Agent, Data Agent, Revenue Agent), moving upmarket with Enterprise tiers (custom objects, advanced permissions). Revenue Hub launch (June 2026) unifies quoting, payments, contracts, collections. Onboarding fees ($3K-7K) create Year 1 revenue bump.</div>
+            <div class="source">Sources: https://ir.hubspot.com/static-files/a4c0bbe9-83ff-47b3-89f6-259fecf58a2e, https://finance.yahoo.com/markets/stocks/articles/healthy-revenue-growth-boost-hubspots-162900926.html, https://community.hubspot.com/t/q2-2026-revenue-hub-release-round-up/151895, https://devrix.com/tutorial/hubspot-breeze-ai</div>
+        </div>
+
+        <div class="card">
+            <h2>👥 Who Their Customers Are</h2>
+            <div class="content">HubSpot serves 288,706+ paying customers (up from 195K+ in 2025), primarily SMBs (10-200 employees) in 135+ countries. Sweet spot: mid-market companies needing unified marketing+sales+service without Salesforce complexity. ~6% global CRM market share vs Salesforce 20.7%. 3+ Hub customers pay >$40K/year (vs avg $11K). Platform adoption: majority buy 2+ hubs, half buy 3+. Customer dollar retention high-80s%, NRR 103% Q1 2026. 1,800+ integrations + Academy create switching costs - SMBs build inbound flywheels (content>leads>CRM>revenue) that auto-upsell Hubs. Enterprise push: Enterprise tiers gaining traction but still limited Fortune 500 adoption vs Salesforce 90%.</div>
+            <div class="source">Sources: https://tech-insider.org/hubspot-vs-salesforce-2026, https://www.hubspot.com/marketing-statistics, https://devrix.com/tutorial/hubspot-breeze-ai, https://www.useluminix.com/reports/company-overviews/hubspot-company-overview-crm-platform-financials-and-market-position-2026</div>
+        </div>
+
+        <div class="card">
+            <h2>💲 Pricing Model</h2>
+            <div class="content">HubSpot uses hybrid per-seat + contact-tier + hub base fee pricing with annual discounts. Free CRM: unlimited contacts, basic tools, 2 users. Starter Customer Platform: $9/seat/mo (annual) or $15/seat/mo (monthly), includes all Hubs Starter. Marketing Hub: Professional $800/mo (3 core seats, 2K contacts), Enterprise $3,600/mo (5 core seats, 10K contacts), add'l seats $50/$75/mo, onboarding $3K/$7K. Sales Hub: Professional $90/user/mo (5 core seats), Enterprise $150/user/mo (5 core seats). Service Hub: similar seat-based. Content Hub: Professional $800/mo, Enterprise $3,600/mo. Operations Hub: Professional $800/mo, Enterprise $2,000/mo. Commerce/Revenue Hub: included in bundles. Typical 30-35% discounts via negotiation. Year 1 costs inflated by mandatory onboarding fees.</div>
+            <div class="source">Sources: https://www.landbase.com/blog/hubspot-pricing, https://elefanterevops.com/blog/hubspot-pricing, https://cargas.com/software/hubspot/pricing, https://www.featurebase.app/blog/hubspot-pricing, https://www.tropicapp.io/glossary/hubspot-price</div>
+        </div>
+
+        <div class="card">
+            <h2>🏰 Why They Win (Moat)</h2>
+            <div class="content">HubSpot's moat rests on four pillars: (1) Unified SMB Platform - single CRM + 6 Hubs + 1,800 integrations + Academy creates ecosystem lock-in; SMBs build inbound flywheels (content>leads>CRM>revenue) that auto-upsell Hubs, yielding 129% more leads YoY. Self-serve onboarding (2 days vs 6mo for Salesforce) lowers barrier. (2) AI Agent Layer (Breeze) - Customer Agent, Prospecting Agent, Data Agent, Revenue Agent, AEO (Agentic Engagement Object) embedded natively across CRM, not bolted on. Breeze Context Layer unifies CRM data for high-fidelity ICP understanding. Spring 2026: 100+ updates, Smart Deal Progression, Agentic AI. (3) Data Flywheel - 288K+ customers generate interaction data training Breeze; Breeze Copilot summarizes records, preps calls, researches companies. (4) Go-to-Market Efficiency - freemium→Starter→Pro/Enterprise land-and-expand, low CAC, high NRR. Risks: AI-native CRMs (Attio, Day AI, Clarify) auto-log interactions (email/Slack) into "systems of action" eroding manual entry moat; could capture 10-20% SMB if agents hit 80% accuracy. Mailchimp volume-lead (283K domains) pressures free/SMB tier. Stock down ~35% in 2025 on AI disruption fears.</div>
+            <div class="source">Sources: https://devrix.com/tutorial/hubspot-breeze-ai, https://www.useluminix.com/reports/company-overviews/hubspot-company-overview-crm-platform-financials-and-market-position-2026, https://futurumgroup.com/insights/can-hubspots-agentic-ai-bet-disrupt-enterprise-crms-old-guard, https://firebearstudio.com/blog/hubspot-ultimate-review-the-perfect-crm-to-start.html</div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Research Metadata</h2>
+            <div class="grid">
+                <div>
+                    <div class="label">Company</div>
+                    <div class="content">HubSpot (HUBS)</div>
+                </div>
+                <div>
+                    <div class="label">Sector</div>
+                    <div class="content">CRM/Marketing</div>
+                </div>
+                <div>
+                    <div class="label">Research Date</div>
+                    <div class="content">2026-08-01</div>
+                </div>
+                <div>
+                    <div class="label">Selection Method</div>
+                    <div class="content">Day 213 of year rotation</div>
+                </div>
+            </div>
+        </div>
+
+        <footer style="text-align: center; padding: 2rem; color: #64748b; font-size: 0.85rem;">
+            Generated by Company Research Pipeline · 2026-08-01 12:03:18
+        </footer>
+    </div>
+
+    <script>
+        // Revenue / ARR Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['FY23', 'FY24', 'FY25', 'FY26E', 'FY30 Target'],
+                datasets: [{
+                    label: 'Revenue ($B)',
+                    data: [6.89, 7.80, 9.10, 11.30, 20.00],
+                    backgroundColor: 'rgba(45, 90, 135, 0.8)',
+                    borderColor: '#2d5a87',
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, title: { display: true, text: 'Revenue Growth Trajectory ($B)', font: { size: 14 } } },
+                scales: { y: { beginAtZero: true, ticks: { callback: v => '$' + v + 'B' } } }
+            }
+        });
+
+        // Stock Price Chart (sample data)
+        const stockCtx = document.getElementById('stockChart').getContext('2d');
+        new Chart(stockCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan 25', 'Feb 25', 'Mar 25', 'Apr 25', 'May 25', 'Jun 25', 'Jul 25', 'Aug 25', 'Sep 25', 'Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26', 'Apr 26', 'May 26', 'Jun 26', 'Jul 26'],
+                datasets: [{
+                    label: 'Stock Price ($)',
+                    data: [177, 149, 160, 179, 177, 177, 174, 191, 191, 220, 184, 177, 177, 149, 160, 179, 177, 177, 326],
+                    borderColor: '#2d5a87',
+                    backgroundColor: 'rgba(45, 90, 135, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, title: { display: true, text: 'Stock Price (18-Month History)', font: { size: 14 } } },
+                scales: { y: { ticks: { callback: v => '$' + v } } }
+            }
+        });
+    </script>
+</body>
+</html>

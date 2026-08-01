@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESTC - Elastic Company Research Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        header { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: white; padding: 3rem 2rem; border-radius: 16px 16px 0 0; margin-bottom: 0; }
+        header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        header .meta { display: flex; gap: 2rem; flex-wrap: wrap; opacity: 0.9; font-size: 1rem; }
+        .card { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e8ecf1; }
+        .card h2 { font-size: 1.4rem; font-weight: 600; color: #1e3a5f; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid #e8ecf1; display: flex; align-items: center; gap: 0.75rem; }
+        .card h2::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #2d5a87; }
+        .section { margin-bottom: 1.5rem; }
+        .section:last-child { margin-bottom: 0; }
+        .label { font-size: 0.85rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .content { color: #334155; white-space: pre-wrap; }
+        .source { font-size: 0.8rem; color: #94a3b8; font-style: italic; margin-top: 0.5rem; }
+        .synthesis { background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%); border-left: 4px solid #2d5a87; }
+        .synthesis h2::before { background: #2d5a87; }
+        .key-metric { display: inline-block; background: #1e3a5f; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-right: 0.5rem; margin-bottom: 0.5rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .chart-container { position: relative; height: 300px; margin: 1rem 0; }
+        .metric-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+        .metric-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; text-align: center; }
+        .metric-card .value { font-size: 2rem; font-weight: 700; color: #1e3a5f; }
+        .metric-card .label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+        .metric-card.positive .value { color: #059669; }
+        .metric-card.negative .value { color: #dc2626; }
+        @media (max-width: 600px) { .container { padding: 1rem; } header { padding: 2rem 1.5rem; } header h1 { font-size: 1.8rem; } .card { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>ESTC — Elastic</h1>
+            <div class="meta">
+                <span>📊 Sector: Search/Observability</span>
+                <span>📅 Research Date: 2026-07-30</span>
+                <span>🔍 Day 211 of Year</span>
+            </div>
+        </header>
+
+        <div class="card synthesis">
+            <h2>🎯 Executive Synthesis</h2>
+            <div class="content">[Executive synthesis to be generated]</div>
+        </div>
+
+        <div class="card">
+            <h2>📈 Key Metrics Dashboard</h2>
+            <div class="metric-cards">
+                
+    <div class="metric-card"><div class="value">—</div><div class="label">Market Cap</div></div>
+    <div class="metric-card"><div class="value">—</div><div class="label">Revenue</div></div>
+    <div class="metric-card"><div class="value">—</div><div class="label">ARR</div></div>
+    <div class="metric-card"><div class="value">—</div><div class="label">Gross Margin</div></div>
+    <div class="metric-card"><div class="value">—</div><div class="label">Op Margin</div></div>
+    <div class="metric-card"><div class="value">—</div><div class="label">NRR</div></div>
+    
+            </div>
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="stockChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💰 How They Make Money</h2>
+            <div class="content">[To be synthesized from search results]</div>
+            <div class="source">Sources: </div>
+        </div>
+
+        <div class="card">
+            <h2>👥 Who Their Customers Are</h2>
+            <div class="content">[To be synthesized from search results]</div>
+            <div class="source">Sources: </div>
+        </div>
+
+        <div class="card">
+            <h2>💲 Pricing Model</h2>
+            <div class="content">[To be synthesized from search results]</div>
+            <div class="source">Sources: </div>
+        </div>
+
+        <div class="card">
+            <h2>🏰 Why They Win (Moat)</h2>
+            <div class="content">[To be synthesized from search results]</div>
+            <div class="source">Sources: </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Research Metadata</h2>
+            <div class="grid">
+                <div>
+                    <div class="label">Company</div>
+                    <div class="content">Elastic (ESTC)</div>
+                </div>
+                <div>
+                    <div class="label">Sector</div>
+                    <div class="content">Search/Observability</div>
+                </div>
+                <div>
+                    <div class="label">Research Date</div>
+                    <div class="content">2026-07-30</div>
+                </div>
+                <div>
+                    <div class="label">Selection Method</div>
+                    <div class="content">Day 211 of year rotation</div>
+                </div>
+            </div>
+        </div>
+
+        <footer style="text-align: center; padding: 2rem; color: #64748b; font-size: 0.85rem;">
+            Generated by Company Research Pipeline · 2026-07-30 06:03:31
+        </footer>
+    </div>
+
+    <script>
+        // Revenue / ARR Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['FY23', 'FY24', 'FY25', 'FY26E', 'FY30 Target'],
+                datasets: [{
+                    label: 'Revenue ($B)',
+                    data: [6.89, 7.80, 9.10, 11.30, 20.00],
+                    backgroundColor: 'rgba(45, 90, 135, 0.8)',
+                    borderColor: '#2d5a87',
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, title: { display: true, text: 'Revenue Growth Trajectory ($B)', font: { size: 14 } } },
+                scales: { y: { beginAtZero: true, ticks: { callback: v => '$' + v + 'B' } } }
+            }
+        });
+
+        // Stock Price Chart (sample data)
+        const stockCtx = document.getElementById('stockChart').getContext('2d');
+        new Chart(stockCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan 25', 'Feb 25', 'Mar 25', 'Apr 25', 'May 25', 'Jun 25', 'Jul 25', 'Aug 25', 'Sep 25', 'Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26', 'Apr 26', 'May 26', 'Jun 26', 'Jul 26'],
+                datasets: [{
+                    label: 'Stock Price ($)',
+                    data: [177, 149, 160, 179, 177, 177, 174, 191, 191, 220, 184, 177, 177, 149, 160, 179, 177, 177, 326],
+                    borderColor: '#2d5a87',
+                    backgroundColor: 'rgba(45, 90, 135, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, title: { display: true, text: 'Stock Price (18-Month History)', font: { size: 14 } } },
+                scales: { y: { ticks: { callback: v => '$' + v } } }
+            }
+        });
+    </script>
+</body>
+</html>
