@@ -80,3 +80,4 @@ archive/
 !README.md
 !docs/index.html
 !docs/data.json
+!docs/reports/*.html
