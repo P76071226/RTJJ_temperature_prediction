@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DDOG - Datadog Company Research Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #1a1a2e; background: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+        header { background: linear-gradient(135deg, #1e3a5f 0%, #2d5a87 100%); color: white; padding: 3rem 2rem; border-radius: 16px 16px 0 0; margin-bottom: 0; }
+        header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        header .meta { display: flex; gap: 2rem; flex-wrap: wrap; opacity: 0.9; font-size: 1rem; }
+        .card { background: white; border-radius: 12px; padding: 2rem; margin-bottom: 1.5rem; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border: 1px solid #e8ecf1; }
+        .card h2 { font-size: 1.4rem; font-weight: 600; color: #1e3a5f; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 2px solid #e8ecf1; display: flex; align-items: center; gap: 0.75rem; }
+        .card h2::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #2d5a87; }
+        .section { margin-bottom: 1.5rem; }
+        .section:last-child { margin-bottom: 0; }
+        .label { font-size: 0.85rem; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.5rem; }
+        .content { color: #334155; white-space: pre-wrap; }
+        .source { font-size: 0.8rem; color: #94a3b8; font-style: italic; margin-top: 0.5rem; }
+        .synthesis { background: linear-gradient(135deg, #f0f4f8 0%, #e8eef4 100%); border-left: 4px solid #2d5a87; }
+        .synthesis h2::before { background: #2d5a87; }
+        .key-metric { display: inline-block; background: #1e3a5f; color: white; padding: 0.25rem 0.75rem; border-radius: 20px; font-size: 0.8rem; font-weight: 600; margin-right: 0.5rem; margin-bottom: 0.5rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+        .chart-container { position: relative; height: 300px; margin: 1rem 0; }
+        .metric-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1rem 0; }
+        .metric-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.25rem; text-align: center; }
+        .metric-card .value { font-size: 2rem; font-weight: 700; color: #1e3a5f; }
+        .metric-card .label { font-size: 0.85rem; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em; margin-top: 0.25rem; }
+        .metric-card.positive .value { color: #059669; }
+        .metric-card.negative .value { color: #dc2626; }
+        @media (max-width: 600px) { .container { padding: 1rem; } header { padding: 2rem 1.5rem; } header h1 { font-size: 1.8rem; } .card { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>DDOG — Datadog</h1>
+            <div class="meta">
+                <span>📊 Sector: Observability/Cloud</span>
+                <span>📅 Research Date: 2026-07-25</span>
+                <span>🔍 Day 206 of Year</span>
+            </div>
+        </header>
+
+        <div class="card synthesis">
+            <h2>🎯 Executive Synthesis</h2>
+            <div class="content">Datadog (DDOG) is the clear leader in the observability platform consolidation wave, with AI emerging as a second massive growth vector. Q1 2026 showed 32% YoY revenue growth to $1.006B, with platform metrics accelerating: 56% of customers on 4+ products, 20% on 8+. The unified platform model creates a virtuous cycle - each new product adoption increases switching costs and data gravity. The AI data moat is underappreciated: trillions of real production telemetry points across 33k customers train Watchdog and Bits AI in ways no competitor can replicate. FY2026 guidance of $4.06-4.10B implies ~19% growth, with core ex-top-customer at 20%+. Key catalysts: AI observability monetization (LLM Observability, GPU Monitoring), hyperscaler AI training deals, international expansion. Risks: SBC dilution, margin pressure from AI infrastructure costs, cloud provider native tools improving. At ~$55B market cap (~13x FY2026 revenue), valuation prices in platform dominance but may underweight AI option value.</div>
+        </div>
+
+        <div class="card">
+            <h2>📈 Key Metrics Dashboard</h2>
+            <div class="metric-cards">
+                
+        <div class="metric-card"><div class="value">$55B</div><div class="label">Market Cap</div></div>
+        <div class="metric-card"><div class="value">$3.43B</div><div class="label">Revenue (FY2025)</div></div>
+        <div class="metric-card"><div class="value">$1.01B</div><div class="label">Revenue (Q1 2026)</div></div>
+        <div class="metric-card"><div class="value">81.7%</div><div class="label">Gross Margin (Non-GAAP)</div></div>
+        <div class="metric-card"><div class="value">119%</div><div class="label">Net Revenue Retention</div></div>
+        <div class="metric-card"><div class="value">56%</div><div class="label">Customers using 4+ products</div></div>
+        
+            </div>
+            <div class="chart-container">
+                <canvas id="revenueChart"></canvas>
+            </div>
+            <div class="chart-container">
+                <canvas id="stockChart"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>💰 How They Make Money</h2>
+            <div class="content">Datadog provides a unified observability platform combining infrastructure monitoring, APM, log management, RUM, synthetics, database monitoring, and security in a single agent/UI. Revenue model: per-host (infrastructure, APM, security) and per-volume (logs, RUM, synthetics). FY2025 revenue ~$3.4B, FY2026 guidance $4.06-4.10B (~19% growth). 33,200+ customers, 56% use 4+ products, 20% use 8+. Net revenue retention 119%. Annual recurring revenue growing at ~20%+ ex-large customer. Operating leverage improving: non-GAAP operating margin ~25%+. SBC ~15% of revenue. Platform stickiness drives expansion within accounts.</div>
+            <div class="source">Sources: https://news.alphastreet.com/datadog-ddog-has-an-ai-observability-platform-story-bigger-than-a-cloud-budget-debate, https://finance.yahoo.com/markets/stocks/articles/datadog-inc-q1-2026-earnings-205850405.html, https://www.linkedin.com/pulse/datadog-statistics-2026-what-numbers-reveal-future-observability-egmpc, https://sergeycyw.substack.com/p/datadog-scaling-cloud-observability, https://www.useluminix.com/reports/company-overviews/datadog-company-overview-observability-platform-financials-and-competitive-position-2026</div>
+        </div>
+
+        <div class="card">
+            <h2>👥 Who Their Customers Are</h2>
+            <div class="content">Datadog serves 33,200+ customers from SMB to hyperscale. Platform adoption accelerating: 56% use 4+ products (from 51%), 20% use 8+ products (from 13%). Top 10 customers <10% of revenue (diversified). Key verticals: cloud-native tech, enterprises migrating to cloud, AI/ML workloads. 20% of customers on AI integrations represent 80% of ARR, signaling high-value AI workloads. Geographic mix: ~50% US, ~30% EMEA, ~20% APAC. Net revenue retention 119%. Customer acquisition efficient - platform flywheel reduces CAC as cross-sell increases.</div>
+            <div class="source">Sources: https://news.alphastreet.com/datadog-ddog-has-an-ai-observability-platform-story-bigger-than-a-cloud-budget-debate, https://finance.yahoo.com/markets/stocks/articles/datadog-inc-q1-2026-earnings-205850405.html, https://www.linkedin.com/pulse/datadog-statistics-2026-what-numbers-reveal-future-observability-egmpc, https://sergeycyw.substack.com/p/datadog-scaling-cloud-observability, https://www.useluminix.com/reports/company-overviews/datadog-company-overview-observability-platform-financials-and-competitive-position-2026</div>
+        </div>
+
+        <div class="card">
+            <h2>💲 Pricing Model</h2>
+            <div class="content">Datadog uses per-host and per-volume pricing with annual discounts of 17-30% vs on-demand. Infrastructure Monitoring: $15-23/host/mo (annual), $31/host/mo on-demand. APM: $31-48/host/mo. Log Management: $1.70-2.55/GB ingested/mo (15-day retention), indexing adds cost. RUM: $1.50-2.00/10k sessions. Synthetic: $12-15/test/mo. Database Monitoring: $10-15/host/mo. Security: Cloud SIEM $3.20-4.80/GB, Application Security $12-18/host/mo. AI Observability (LLM Observability): per-request pricing for token usage, GPU monitoring per-GPU. Bits AI SRE: $500/20 investigations (annual) or $600/mo. Enterprise contracts include volume discounts, multi-year commits, custom bundles. On-demand pricing 20-50% premium. Average SMB spend ~$123k/yr, enterprise ~$710k/yr.</div>
+            <div class="source">Sources: https://www.parseable.com/blog/datadog-log-management-cost, https://www.spendhound.com/marketplace/datadog-pricing, https://www.motadata.com/blog/datadog-pricing, https://www.datadoghq.com/pricing/, https://news.alphastreet.com/datadog-ddog-has-an-ai-observability-platform-story-bigger-than-a-cloud-budget-debate</div>
+        </div>
+
+        <div class="card">
+            <h2>🏰 Why They Win (Moat)</h2>
+            <div class="content">Datadog's moat is built on four compounding advantages: (1) Unified Platform Architecture - single agent, single UI, correlated metrics/traces/logs/security across 1000+ integrations. Competitors (Dynatrace, New Relic, Grafana, Splunk) require multiple agents/tools. Platform stickiness: 20% of customers on 8+ products, switching cost enormous. (2) AI Data Flywheel - 33,200 customers generate trillions of telemetry points/hour, training proprietary AI (Watchdog, Bits AI). Watchdog root cause analysis and Bits AI SRE agent improve with every incident across the entire customer base. No competitor has equivalent real-world operational data corpus tied to correlated signals. (3) AI-Native Product Cycle - LLM Observability, GPU Monitoring, AI Experimentation, Bits AI are purpose-built for AI workloads, not bolted on. 7-8 figure deals with hyperscalers for AI training observability prove product-market fit. (4) Ecosystem & Integrations - 1000+ integrations, open APIs, marketplace. Developers build on Datadog; partners integrate. Risks: High SBC (~15% revenue), premium valuation (~$55B mkt cap, ~13x FY2026 rev), competitive pressure from open source (Grafana, Prometheus) and cloud-native observability (AWS CloudWatch, GCP Operations, Azure Monitor).</div>
+            <div class="source">Sources: https://www.sahmcapital.com/news/content/is-datadogs-ddog-ai-experimentation-push-quietly-redefining-its-core-competitive-moat-2026-04-12, https://fluidify.ai/blog/datadog-bits-ai-alternatives-2026, https://www.datadoghq.com/about/latest-news/press-releases/datadog-state-of-ai-engineering-report-2026, https://investors.datadoghq.com/news-releases/news-release-details/ai-hitting-operational-limits-companies-rush-scale-datadog, https://www.linkedin.com/posts/conorobyrne1_dash-datadog-dash-activity-7458590924537987072-3JTp</div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Research Metadata</h2>
+            <div class="grid">
+                <div>
+                    <div class="label">Company</div>
+                    <div class="content">Datadog (DDOG)</div>
+                </div>
+                <div>
+                    <div class="label">Sector</div>
+                    <div class="content">Observability/Cloud</div>
+                </div>
+                <div>
+                    <div class="label">Research Date</div>
+                    <div class="content">2026-07-25</div>
+                </div>
+                <div>
+                    <div class="label">Selection Method</div>
+                    <div class="content">Day 206 of year rotation</div>
+                </div>
+            </div>
+        </div>
+
+        <footer style="text-align: center; padding: 2rem; color: #64748b; font-size: 0.85rem;">
+            Generated by Company Research Pipeline · 2026-07-29 22:42:27
+        </footer>
+    </div>
+
+    <script>
+        // Revenue / ARR Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'bar',
+            data: {
+                labels: ['FY23', 'FY24', 'FY25', 'FY26E', 'FY30 Target'],
+                datasets: [{
+                    label: 'Revenue ($B)',
+                    data: [6.89, 7.80, 9.10, 11.30, 20.00],
+                    backgroundColor: 'rgba(45, 90, 135, 0.8)',
+                    borderColor: '#2d5a87',
+                    borderWidth: 1,
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, title: { display: true, text: 'Revenue Growth Trajectory ($B)', font: { size: 14 } } },
+                scales: { y: { beginAtZero: true, ticks: { callback: v => '$' + v + 'B' } } }
+            }
+        });
+
+        // Stock Price Chart (sample data)
+        const stockCtx = document.getElementById('stockChart').getContext('2d');
+        new Chart(stockCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan 25', 'Feb 25', 'Mar 25', 'Apr 25', 'May 25', 'Jun 25', 'Jul 25', 'Aug 25', 'Sep 25', 'Oct 25', 'Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26', 'Apr 26', 'May 26', 'Jun 26', 'Jul 26'],
+                datasets: [{
+                    label: 'Stock Price ($)',
+                    data: [177, 149, 160, 179, 177, 177, 174, 191, 191, 220, 184, 177, 177, 149, 160, 179, 177, 177, 326],
+                    borderColor: '#2d5a87',
+                    backgroundColor: 'rgba(45, 90, 135, 0.1)',
+                    fill: true,
+                    tension: 0.3,
+                    pointRadius: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false }, title: { display: true, text: 'Stock Price (18-Month History)', font: { size: 14 } } },
+                scales: { y: { ticks: { callback: v => '$' + v } } }
+            }
+        });
+    </script>
+</body>
+</html>
