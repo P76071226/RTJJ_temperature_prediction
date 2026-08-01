@@ -1,10 +1,10 @@
 {
-  "last_update": "2026-08-01T04:02:14Z",
+  "last_update": "2026-08-01T06:26:03Z",
   "pipeline_version": "2.0",
   "model": "XGBoost + Isotonic Calibration",
   "training_samples": 28,
   "unique_classes": 5,
-  "archive_days": 45,
+  "archive_days": 48,
   "backtest": {
     "total_days": 28,
     "mean_brier": 0.1169,
@@ -38,7 +38,16 @@
     {
       "date": "2026-08-01",
       "prediction_date": "2026-08-02",
-      "interval": "29-30°C",
+      "interval": "34-35\u00b0C",
+      "market_p": 0.4136,
+      "model_p": 0.7305,
+      "edge_pp": 31.7,
+      "signal": "BUY"
+    },
+    {
+      "date": "2026-08-01",
+      "prediction_date": "2026-08-02",
+      "interval": "29-30\u00b0C",
       "market_p": 0.0,
       "model_p": 0.804,
       "edge_pp": 80.4,
@@ -47,7 +56,7 @@
     {
       "date": "2026-07-31",
       "prediction_date": "2026-08-01",
-      "interval": "29-30°C",
+      "interval": "29-30\u00b0C",
       "market_p": 0.0,
       "model_p": 0.77,
       "edge_pp": 77.0,
@@ -56,7 +65,7 @@
     {
       "date": "2026-07-31",
       "prediction_date": "2026-08-01",
-      "interval": "29-30°C",
+      "interval": "29-30\u00b0C",
       "market_p": 0.0,
       "model_p": 0.741,
       "edge_pp": 74.1,
@@ -65,7 +74,7 @@
     {
       "date": "2026-07-30",
       "prediction_date": "2026-07-31",
-      "interval": "29-30°C",
+      "interval": "29-30\u00b0C",
       "market_p": 0.005,
       "model_p": 0.72,
       "edge_pp": 71.5,
@@ -74,7 +83,7 @@
     {
       "date": "2026-07-26",
       "prediction_date": "2026-07-27",
-      "interval": "29-30°C",
+      "interval": "29-30\u00b0C",
       "market_p": 0.04,
       "model_p": 0.735,
       "edge_pp": 69.5,
@@ -83,7 +92,7 @@
     {
       "date": "2026-07-23",
       "actual": 34.0,
-      "interval": "34-35°C",
+      "interval": "34-35\u00b0C",
       "market_p": 0.117,
       "model_p": 0.072,
       "edge_pp": -4.5,
@@ -92,7 +101,7 @@
     {
       "date": "2026-07-22",
       "actual": 33.5,
-      "interval": "33-34°C",
+      "interval": "33-34\u00b0C",
       "market_p": 0.337,
       "model_p": 0.242,
       "edge_pp": -9.5,
@@ -101,7 +110,7 @@
     {
       "date": "2026-07-21",
       "actual": 34.5,
-      "interval": "34-35°C",
+      "interval": "34-35\u00b0C",
       "market_p": 0.117,
       "model_p": 0.072,
       "edge_pp": -4.5,
@@ -110,7 +119,7 @@
     {
       "date": "2026-07-20",
       "actual": 33.4,
-      "interval": "33-34°C",
+      "interval": "33-34\u00b0C",
       "market_p": 0.337,
       "model_p": 0.242,
       "edge_pp": -9.5,
@@ -119,7 +128,7 @@
     {
       "date": "2026-07-19",
       "actual": 30.6,
-      "interval": "30-31°C",
+      "interval": "30-31\u00b0C",
       "market_p": 0.02,
       "model_p": 0.0,
       "edge_pp": -2.0,
@@ -128,7 +137,7 @@
     {
       "date": "2026-07-18",
       "actual": 27.9,
-      "interval": "27-28°C",
+      "interval": "27-28\u00b0C",
       "market_p": 0.35,
       "model_p": 0.0,
       "edge_pp": -35.0,
@@ -137,7 +146,7 @@
     {
       "date": "2026-07-17",
       "actual": 29.6,
-      "interval": "29-30°C",
+      "interval": "29-30\u00b0C",
       "market_p": 0.08,
       "model_p": 0.0,
       "edge_pp": -8.0,
@@ -146,7 +155,7 @@
     {
       "date": "2026-07-13",
       "actual": 29.5,
-      "interval": "29-30°C",
+      "interval": "29-30\u00b0C",
       "market_p": 0.08,
       "model_p": 0.0,
       "edge_pp": -8.0,
@@ -155,7 +164,7 @@
     {
       "date": "2026-07-12",
       "actual": 29.5,
-      "interval": "29-30°C",
+      "interval": "29-30\u00b0C",
       "market_p": 0.08,
       "model_p": 0.855,
       "edge_pp": 77.5,
@@ -281,7 +290,7 @@
       }
     ],
     "signal": {
-      "interval": "29-30°C",
+      "interval": "29-30\u00b0C",
       "market_p": 0.0,
       "model_p": 0.804,
       "edge_pp": 80.4,
