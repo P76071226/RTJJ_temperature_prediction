@@ -1,10 +1,10 @@
 {
-  "last_update": "2026-08-01T06:26:03Z",
+  "last_update": "2026-08-02T09:44:56Z",
   "pipeline_version": "2.0",
   "model": "XGBoost + Isotonic Calibration",
   "training_samples": 28,
   "unique_classes": 5,
-  "archive_days": 48,
+  "archive_days": 50,
   "backtest": {
     "total_days": 28,
     "mean_brier": 0.1169,
@@ -35,6 +35,15 @@
     }
   },
   "signals": [
+    {
+      "date": "2026-08-02",
+      "prediction_date": "2026-08-03",
+      "interval": "35-36\u00b0C",
+      "market_p": 0.0426,
+      "model_p": 0.4529,
+      "edge_pp": 41.0,
+      "signal": "BUY"
+    },
     {
       "date": "2026-08-01",
       "prediction_date": "2026-08-02",

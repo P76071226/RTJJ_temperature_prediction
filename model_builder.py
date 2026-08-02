@@ -75,6 +75,14 @@ def main():
         n_mapped_classes = len(calibrators)
         print(f'[INFO] Loaded {model_bundle.get("model_name", "unknown")} model with {n_mapped_classes} calibrators')
         probs_mapped = apply_calibration(model, feat_vec, calibrators, n_mapped_classes)
+        # Add temperature-dependent uncertainty
+        temp_uncertainty = 0.1 * (1 + abs(fc_mean - 28) / 5)
+        probs_mapped += np.random.normal(0, temp_uncertainty, probs_mapped.shape)
+        probs_mapped = np.clip(probs_mapped, 0, 1)
+        probs_mapped = probs_mapped / probs_mapped.sum(axis=1, keepdims=True)
+
+        
+
         probs_full = np.zeros((1, len(market_intervals)))
         for mapped_idx, orig_idx in idx_to_class.items():
             if orig_idx < len(market_intervals):

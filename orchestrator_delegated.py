@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-import json, os, sys, shutil
+import json, os, sys, shutil, subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -29,7 +29,24 @@ def run_delegated_pipeline():
     if all_ok:
         archive_run(datetime.now(timezone.utc))
         print_summary()
+        # Run action optimizer after successful pipeline
+        run_action_optimizer()
     return all_ok
+
+def run_action_optimizer():
+    print('\n=== RUNNING ACTION OPTIMIZER ===')
+    try:
+        result = subprocess.run([sys.executable, str(BASE_DIR / 'action_optimizer.py')], 
+                              capture_output=True, text=True, cwd=BASE_DIR, timeout=120)
+        print(result.stdout)
+        if result.stderr:
+            print('STDERR:', result.stderr)
+        if result.returncode == 0:
+            print('Action optimizer completed successfully')
+        else:
+            print(f'Action optimizer exited with code {result.returncode}')
+    except Exception as e:
+        print(f'Action optimizer error: {e}')
 
 def archive_run(run_time):
     folder_name = run_time.strftime('%Y%m%d_%H%M%S')
@@ -63,6 +80,5 @@ def print_summary():
     except Exception as e: print(f'Failed to create summary: {e}')
 
 if __name__ == '__main__':
-    import subprocess
     success = run_delegated_pipeline()
     sys.exit(0 if success else 1)
